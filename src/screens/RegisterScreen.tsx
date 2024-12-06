@@ -5,12 +5,12 @@ import {
   Text,
   TextInput,
   Button,
-  StyleSheet,
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useTheme} from '../context/ThemeContext';
 import {CircleImage} from '../components/CircleImage';
+import {RegisterStyles} from '../css/RegisterStyles';
 
 const RegisterScreen = () => {
   const [formData, setFormData] = useState({
@@ -43,20 +43,23 @@ const RegisterScreen = () => {
 
   return (
     <ScrollView
-      style={[styles.container, {backgroundColor: theme.colors.backgrounds}]}>
-      <View style={styles.titleContainer}>
+      style={[
+        RegisterStyles.container,
+        {backgroundColor: theme.colors.backgrounds},
+      ]}>
+      <View style={RegisterStyles.titleContainer}>
         <CircleImage />
-        <View style={styles.formUpContainer}>
-          <Text style={[styles.title, {color: theme.colors.texts}]}>
+        <View style={RegisterStyles.formUpContainer}>
+          <Text style={[RegisterStyles.title, {color: theme.colors.texts}]}>
             Sign up
           </Text>
 
-          <View style={styles.nameNumberContainer}>
-            <View style={styles.inputGroup}>
-              <Text style={[styles.label, {color: theme.colors.texts}]}>
+          <View style={RegisterStyles.nameNumberContainer}>
+            <View style={RegisterStyles.inputGroup}>
+              <Text style={[RegisterStyles.label, {color: theme.colors.texts}]}>
                 Name:
               </Text>
-              <View style={styles.inputWithIcon}>
+              <View style={RegisterStyles.inputWithIcon}>
                 <Icon
                   name="person-outline"
                   size={20}
@@ -64,7 +67,7 @@ const RegisterScreen = () => {
                 />
                 <TextInput
                   style={[
-                    styles.input,
+                    RegisterStyles.input,
                     {
                       borderColor: theme.colors.inputs,
                       color: theme.colors.texts,
@@ -78,11 +81,11 @@ const RegisterScreen = () => {
               </View>
             </View>
 
-            <View style={styles.inputGroup}>
-              <Text style={[styles.label, {color: theme.colors.texts}]}>
+            <View style={RegisterStyles.inputGroup}>
+              <Text style={[RegisterStyles.label, {color: theme.colors.texts}]}>
                 Number:
               </Text>
-              <View style={styles.inputWithIcon}>
+              <View style={RegisterStyles.inputWithIcon}>
                 <Icon
                   name="call-outline"
                   size={20}
@@ -90,7 +93,7 @@ const RegisterScreen = () => {
                 />
                 <TextInput
                   style={[
-                    styles.input,
+                    RegisterStyles.input,
                     {
                       borderColor: theme.colors.inputs,
                       color: theme.colors.texts,
@@ -107,13 +110,15 @@ const RegisterScreen = () => {
         </View>
       </View>
 
-      <View style={styles.inputGroup}>
-        <Text style={[styles.label, {color: theme.colors.texts}]}>Email:</Text>
-        <View style={styles.inputWithIcon}>
+      <View style={RegisterStyles.inputGroup}>
+        <Text style={[RegisterStyles.label, {color: theme.colors.texts}]}>
+          Email:
+        </Text>
+        <View style={RegisterStyles.inputWithIcon}>
           <Icon name="mail-outline" size={20} color={theme.colors.texts} />
           <TextInput
             style={[
-              styles.input,
+              RegisterStyles.input,
               {borderColor: theme.colors.inputs, color: theme.colors.texts},
             ]}
             value={formData.email}
@@ -124,11 +129,11 @@ const RegisterScreen = () => {
         </View>
       </View>
 
-      <View style={styles.inputGroup}>
-        <Text style={[styles.label, {color: theme.colors.texts}]}>
+      <View style={RegisterStyles.inputGroup}>
+        <Text style={[RegisterStyles.label, {color: theme.colors.texts}]}>
           Password:
         </Text>
-        <View style={styles.inputWithIcon}>
+        <View style={RegisterStyles.inputWithIcon}>
           <Icon
             name="lock-closed-outline"
             size={20}
@@ -136,7 +141,7 @@ const RegisterScreen = () => {
           />
           <TextInput
             style={[
-              styles.input,
+              RegisterStyles.input,
               {borderColor: theme.colors.inputs, color: theme.colors.texts},
             ]}
             value={formData.password}
@@ -156,11 +161,11 @@ const RegisterScreen = () => {
         </View>
       </View>
 
-      <View style={styles.inputGroup}>
-        <Text style={[styles.label, {color: theme.colors.texts}]}>
+      <View style={RegisterStyles.inputGroup}>
+        <Text style={[RegisterStyles.label, {color: theme.colors.texts}]}>
           Confirm Password:
         </Text>
-        <View style={styles.inputWithIcon}>
+        <View style={RegisterStyles.inputWithIcon}>
           <Icon
             name="lock-closed-outline"
             size={20}
@@ -168,7 +173,7 @@ const RegisterScreen = () => {
           />
           <TextInput
             style={[
-              styles.input,
+              RegisterStyles.input,
               {borderColor: theme.colors.inputs, color: theme.colors.texts},
             ]}
             value={formData.confirmPassword}
@@ -189,14 +194,14 @@ const RegisterScreen = () => {
       </View>
 
       {/* Recovery Password Button */}
-      <View style={styles.inputGroup}>
+      <View style={RegisterStyles.inputGroup}>
         <TouchableOpacity
           onPress={handleRecoveryPassword}
-          style={styles.recoveryPasswordButton}>
+          style={RegisterStyles.recoveryPasswordButton}>
           <Icon name="key-outline" size={20} color={theme.colors.texts} />
           <Text
             style={[
-              styles.recoveryPasswordText,
+              RegisterStyles.recoveryPasswordText,
               {color: theme.colors.texts, borderColor: theme.colors.inputs},
             ]}>
             Recovery Password
@@ -212,67 +217,5 @@ const RegisterScreen = () => {
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  titleContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 24,
-    textAlign: 'center',
-    marginBottom: 10,
-    marginTop: 30,
-  },
-  formUpContainer: {
-    flexDirection: 'column',
-    width: 160,
-  },
-  nameNumberContainer: {
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    gap: 10,
-  },
-  inputGroup: {
-    marginBottom: 15,
-    flex: 1,
-  },
-  label: {
-    fontSize: 14,
-    marginBottom: 5,
-  },
-  inputWithIcon: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingLeft: 10,
-    height: 40,
-  },
-  input: {
-    flex: 1,
-    paddingLeft: 10,
-    height: 40,
-    fontSize: 14,
-  },
-  recoveryPasswordButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-  },
-  recoveryPasswordText: {
-    marginLeft: 10,
-    fontSize: 16,
-  },
-});
 
 export default RegisterScreen;
