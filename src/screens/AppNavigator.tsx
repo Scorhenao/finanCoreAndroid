@@ -4,6 +4,7 @@ import RegisterScreen from './RegisterScreen';
 import DarkModeToggle from '../components/ToggleTheme';
 import {useTheme} from '../context/ThemeContext';
 import {Image, View} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 const Stack = createStackNavigator();
 
@@ -19,12 +20,11 @@ export default function AppNavigator() {
           headerTitle: () => (
             <View
               style={{
-                // Aplica la sombra al contenedor del logo
-                shadowColor: theme.colors.texts, // Color de la sombra
-                shadowOffset: {width: 0, height: 5}, // Desplazamiento de la sombra hacia abajo
-                shadowOpacity: 0.3, // Opacidad de la sombra
-                shadowRadius: 6, // Difuminado de la sombra
-                elevation: 6, // Elevación para Android
+                shadowColor: theme.colors.texts,
+                shadowOffset: {width: 0, height: 10},
+                shadowOpacity: 0.3,
+                shadowRadius: 6,
+                elevation: 6,
               }}>
               <Image
                 source={require('../assets/logo.png')}
@@ -36,16 +36,33 @@ export default function AppNavigator() {
             </View>
           ),
           headerTitleAlign: 'center',
-          headerRight: () => <DarkModeToggle />,
+          headerLeft: () => (
+            <View style={{marginLeft: 10}}>
+              <DarkModeToggle />
+            </View>
+          ),
           headerStyle: {
-            backgroundColor: theme.colors.backgrounds, // Fondo del header
-            shadowColor: theme.colors.texts, // Sombra del fondo del header
-            shadowOffset: {width: 0, height: 5}, // Desplazamiento de la sombra
-            shadowOpacity: 0.2,
-            shadowRadius: 5,
-            elevation: 5,
+            backgroundColor: 'transparent',
+            height: 100, // Puedes ajustar la altura según lo que necesites
           },
-          headerTintColor: theme.colors.texts, // Color del texto en el header
+          headerBackground: () => (
+            <LinearGradient
+              colors={[theme.colors.backgrounds, theme.colors.texts]}
+              style={{
+                // Asegúrate de que el gradiente ocupe todo el espacio disponible
+                flex: 1,
+                height: '100%',
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 100,
+                transform: [
+                  {rotate: '-10deg'}, // Puedes ajustar el ángulo de rotación si es necesario
+                  {scaleX: 1.8}, // Ajusta el tamaño horizontalmente
+                  {scaleY: 1.6}, // Ajusta el tamaño verticalmente
+                ],
+              }}
+            />
+          ),
+          headerTintColor: theme.colors.texts,
         }}
       />
     </Stack.Navigator>
