@@ -1,17 +1,24 @@
 import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {useTheme} from '../context/ThemeContext';
 
 export const CircleImage = () => {
+  const {darkMode} = useTheme();
+
   return (
     <View style={CircleImageStyles.container}>
-      <Text>Circle Image</Text>
       <Image
         source={{uri: 'https://i.pravatar.cc/100'}}
         style={CircleImageStyles.container}
       />
 
-      <Icon name="add-circle-outline" size={24} color="black" />
+      <Icon
+        style={CircleImageStyles.icon}
+        name="add-circle-outline"
+        size={30}
+        color={darkMode ? '#fff' : '#000'}
+      />
     </View>
   );
 };
@@ -23,5 +30,10 @@ const CircleImageStyles = StyleSheet.create({
     borderRadius: 100 / 2,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  icon: {
+    position: 'absolute',
+    bottom: -8,
+    right: 0,
   },
 });

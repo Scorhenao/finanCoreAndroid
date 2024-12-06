@@ -1,8 +1,11 @@
 import React, {createContext, useState, useContext, ReactNode} from 'react';
+import lightModeTheme from '../theme/LightModeTheme';
+import darkModeTheme from '../theme/DarkModeTheme';
 
 interface ThemeContextType {
   darkMode: boolean;
   toggleDarkMode: () => void;
+  theme: typeof darkModeTheme | typeof lightModeTheme;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -12,8 +15,10 @@ export const ThemeProvider = ({children}: {children: ReactNode}) => {
 
   const toggleDarkMode = () => setDarkMode(!darkMode);
 
+  const theme = darkMode ? darkModeTheme : lightModeTheme;
+
   return (
-    <ThemeContext.Provider value={{darkMode, toggleDarkMode}}>
+    <ThemeContext.Provider value={{darkMode, toggleDarkMode, theme}}>
       {children}
     </ThemeContext.Provider>
   );
