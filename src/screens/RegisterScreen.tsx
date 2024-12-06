@@ -8,7 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons'; // Importing icons
+import Icon from 'react-native-vector-icons/Ionicons';
 import {useTheme} from '../context/ThemeContext';
 import {CircleImage} from '../components/CircleImage';
 
@@ -22,11 +22,10 @@ const RegisterScreen = () => {
     recoveryPassword: '',
   });
 
-  const [passwordVisible, setPasswordVisible] = useState(false); // State for password visibility
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false); // State for confirm password visibility
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
-  const {darkMode, theme} = useTheme(); // Getting the current theme
-
+  const {darkMode, theme} = useTheme();
   const handleChange = (name, value) => {
     setFormData({
       ...formData,
@@ -52,7 +51,6 @@ const RegisterScreen = () => {
             Sign up
           </Text>
 
-          {/* Form with Name and Number aligned */}
           <View style={styles.nameNumberContainer}>
             <View style={styles.inputGroup}>
               <Text style={[styles.label, {color: theme.colors.texts}]}>
@@ -68,7 +66,7 @@ const RegisterScreen = () => {
                   style={[
                     styles.input,
                     {
-                      borderColor: theme.colors.inputs, // Border color based on theme
+                      borderColor: theme.colors.inputs,
                       color: theme.colors.texts,
                     },
                   ]}
@@ -94,7 +92,7 @@ const RegisterScreen = () => {
                   style={[
                     styles.input,
                     {
-                      borderColor: theme.colors.inputs, // Border color based on theme
+                      borderColor: theme.colors.inputs,
                       color: theme.colors.texts,
                     },
                   ]}
@@ -230,7 +228,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
+    marginTop: 30,
   },
   formUpContainer: {
     flexDirection: 'column',
