@@ -10,7 +10,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useTheme} from '../context/ThemeContext';
 import {CircleImage} from '../components/CircleImage';
-import {RegisterStyles} from '../css/RegisterStyles';
+import {AuthStyles} from '../css/AuthStyles';
 
 const RegisterScreen = () => {
   const [formData, setFormData] = useState({
@@ -44,22 +44,22 @@ const RegisterScreen = () => {
   return (
     <ScrollView
       style={[
-        RegisterStyles.container,
+        AuthStyles.container,
         {backgroundColor: theme.colors.backgrounds},
       ]}>
-      <View style={RegisterStyles.titleContainer}>
+      <View style={AuthStyles.titleContainer}>
         <CircleImage />
-        <View style={RegisterStyles.formUpContainer}>
-          <Text style={[RegisterStyles.title, {color: theme.colors.texts}]}>
+        <View style={AuthStyles.formUpContainer}>
+          <Text style={[AuthStyles.title, {color: theme.colors.texts}]}>
             Sign up
           </Text>
 
-          <View style={RegisterStyles.nameNumberContainer}>
-            <View style={RegisterStyles.inputGroup}>
-              <Text style={[RegisterStyles.label, {color: theme.colors.texts}]}>
+          <View style={AuthStyles.nameNumberContainer}>
+            <View style={AuthStyles.inputGroup}>
+              <Text style={[AuthStyles.label, {color: theme.colors.texts}]}>
                 Name:
               </Text>
-              <View style={RegisterStyles.inputWithIcon}>
+              <View style={AuthStyles.inputWithIcon}>
                 <Icon
                   name="person-outline"
                   size={20}
@@ -67,7 +67,7 @@ const RegisterScreen = () => {
                 />
                 <TextInput
                   style={[
-                    RegisterStyles.input,
+                    AuthStyles.input,
                     {
                       borderColor: theme.colors.inputs,
                       color: theme.colors.texts,
@@ -81,11 +81,11 @@ const RegisterScreen = () => {
               </View>
             </View>
 
-            <View style={RegisterStyles.inputGroup}>
-              <Text style={[RegisterStyles.label, {color: theme.colors.texts}]}>
+            <View style={AuthStyles.inputGroup}>
+              <Text style={[AuthStyles.label, {color: theme.colors.texts}]}>
                 Number:
               </Text>
-              <View style={RegisterStyles.inputWithIcon}>
+              <View style={AuthStyles.inputWithIcon}>
                 <Icon
                   name="call-outline"
                   size={20}
@@ -93,7 +93,7 @@ const RegisterScreen = () => {
                 />
                 <TextInput
                   style={[
-                    RegisterStyles.input,
+                    AuthStyles.input,
                     {
                       borderColor: theme.colors.inputs,
                       color: theme.colors.texts,
@@ -110,15 +110,15 @@ const RegisterScreen = () => {
         </View>
       </View>
 
-      <View style={RegisterStyles.inputGroup}>
-        <Text style={[RegisterStyles.label, {color: theme.colors.texts}]}>
+      <View style={AuthStyles.inputGroup}>
+        <Text style={[AuthStyles.label, {color: theme.colors.texts}]}>
           Email:
         </Text>
-        <View style={RegisterStyles.inputWithIcon}>
+        <View style={AuthStyles.inputWithIcon}>
           <Icon name="mail-outline" size={20} color={theme.colors.texts} />
           <TextInput
             style={[
-              RegisterStyles.input,
+              AuthStyles.input,
               {borderColor: theme.colors.inputs, color: theme.colors.texts},
             ]}
             value={formData.email}
@@ -129,11 +129,11 @@ const RegisterScreen = () => {
         </View>
       </View>
 
-      <View style={RegisterStyles.inputGroup}>
-        <Text style={[RegisterStyles.label, {color: theme.colors.texts}]}>
+      <View style={AuthStyles.inputGroup}>
+        <Text style={[AuthStyles.label, {color: theme.colors.texts}]}>
           Password:
         </Text>
-        <View style={RegisterStyles.inputWithIcon}>
+        <View style={AuthStyles.inputWithIcon}>
           <Icon
             name="lock-closed-outline"
             size={20}
@@ -141,7 +141,7 @@ const RegisterScreen = () => {
           />
           <TextInput
             style={[
-              RegisterStyles.input,
+              AuthStyles.input,
               {borderColor: theme.colors.inputs, color: theme.colors.texts},
             ]}
             value={formData.password}
@@ -161,11 +161,11 @@ const RegisterScreen = () => {
         </View>
       </View>
 
-      <View style={RegisterStyles.inputGroup}>
-        <Text style={[RegisterStyles.label, {color: theme.colors.texts}]}>
+      <View style={AuthStyles.inputGroup}>
+        <Text style={[AuthStyles.label, {color: theme.colors.texts}]}>
           Confirm Password:
         </Text>
-        <View style={RegisterStyles.inputWithIcon}>
+        <View style={AuthStyles.inputWithIcon}>
           <Icon
             name="lock-closed-outline"
             size={20}
@@ -173,7 +173,7 @@ const RegisterScreen = () => {
           />
           <TextInput
             style={[
-              RegisterStyles.input,
+              AuthStyles.input,
               {borderColor: theme.colors.inputs, color: theme.colors.texts},
             ]}
             value={formData.confirmPassword}
@@ -194,14 +194,14 @@ const RegisterScreen = () => {
       </View>
 
       {/* Recovery Password Button */}
-      <View style={RegisterStyles.inputGroup}>
+      <View style={AuthStyles.inputGroup}>
         <TouchableOpacity
           onPress={handleRecoveryPassword}
-          style={RegisterStyles.recoveryPasswordButton}>
+          style={AuthStyles.recoveryPasswordButton}>
           <Icon name="key-outline" size={20} color={theme.colors.texts} />
           <Text
             style={[
-              RegisterStyles.recoveryPasswordText,
+              AuthStyles.recoveryPasswordText,
               {color: theme.colors.texts, borderColor: theme.colors.inputs},
             ]}>
             Recovery Password
