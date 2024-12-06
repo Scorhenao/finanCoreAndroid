@@ -21,7 +21,6 @@ const CircleImageStyles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 100 / 2,
-    backgroundColor: 'blue',
     justifyContent: 'center',
     alignItems: 'center',
   },
