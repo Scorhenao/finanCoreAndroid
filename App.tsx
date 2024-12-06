@@ -5,8 +5,8 @@ import {CircleImage} from './src/components/CircleImage';
 import DarkModeToggle from './src/components/ToggleTheme';
 import lightModeTheme from './src/theme/LightModeTheme';
 import darkModeTheme from './src/theme/DarkModeTheme';
-import {StackedAreaChart, Grid} from 'react-native-svg-charts';
-import * as shape from 'd3-shape';
+import PieChartWithDynamicSlices from './src/components/PieChart';
+import StackedAreaChartComponent from './src/components/StackedAreaChartComponent'; // Importar el componente
 
 function App(): JSX.Element {
   return (
@@ -44,15 +44,11 @@ function Main() {
       </Text>
       <DarkModeToggle />
 
-      <StackedAreaChart
-        style={{height: 200, width: '90%'}}
-        data={data}
-        keys={keys}
-        colors={colors}
-        contentInset={{top: 30, bottom: 30}}
-        curve={shape.curveNatural}>
-        <Grid />
-      </StackedAreaChart>
+      {/* Add PieChartWithDynamicSlices here */}
+      <PieChartWithDynamicSlices />
+
+      {/* Usar el componente StackedAreaChartComponent */}
+      <StackedAreaChartComponent data={data} keys={keys} colors={colors} />
     </View>
   );
 }
@@ -60,7 +56,6 @@ function Main() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
   },
 });
