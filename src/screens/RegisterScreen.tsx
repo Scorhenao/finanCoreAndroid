@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, Text, TextInput, Button, StyleSheet, Image} from 'react-native';
 
-const Register = () => {
+const RegisterScreen = () => {
   const [formData, setFormData] = useState({
     name: '',
     number: '',
@@ -19,7 +19,6 @@ const Register = () => {
   };
 
   const handleSubmit = () => {
-    // Aquí puedes agregar la lógica para enviar el formulario
     console.log(formData);
   };
 
@@ -103,7 +102,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#f9f9f9', // Puedes cambiar el color de fondo si lo deseas
   },
   logoContainer: {
     alignItems: 'center',
@@ -134,4 +133,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Register;
+export default RegisterScreen;
