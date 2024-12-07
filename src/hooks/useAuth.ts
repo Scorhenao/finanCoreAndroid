@@ -15,7 +15,7 @@ export const useAuth = () => {
     email: string,
     password: string,
     phone: string,
-    file: FileType | null = null,
+    profilePicture: FileType | null = null,
   ) => {
     setLoading(true);
     setError(null);
@@ -27,12 +27,15 @@ export const useAuth = () => {
     formData.append('password', password);
     formData.append('phone', phone);
 
-    if (file) {
+    if (profilePicture) {
+      console.log('File to be sent:', profilePicture);
       formData.append('file', {
-        uri: file.uri,
-        type: file.type,
-        name: file.name,
+        uri: profilePicture.uri,
+        type: profilePicture.type,
+        name: profilePicture.name,
       });
+    } else {
+      console.log('No file selected');
     }
 
     try {
@@ -73,11 +76,9 @@ export const useAuth = () => {
 
       console.log('Response received: ', response);
 
-      // Verifica si el accessToken está presente en la respuesta
       if (response.status === 200 || response.status === 201) {
         const {accessToken} = response.data;
 
-        // Si el token existe, el login es exitoso
         if (accessToken) {
           setSuccess(true);
           console.log('User logged in successfully:', response.data);

@@ -1,35 +1,46 @@
 import {useState} from 'react';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {FileType} from '../common/types/FileTypes';
 
 export const useImagePicker = () => {
-  const [imageUri, setImageUri] = useState('https://i.pravatar.cc/100');
+  const [imageUri, setImageUri] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<FileType | null>(null);
 
-  const handleImageSelect = () => {
-    launchImageLibrary({mediaType: 'photo'}, response => {
-      if (response.assets && response.assets.length > 0) {
-        setImageUri(response.assets[0].uri);
-      }
+  console.log('Selected file:', imageFile);
+
+  const handleImageSelect = async () => {
+    const result = await launchImageLibrary({
+      mediaType: 'photo',
+      includeBase64: false,
     });
+
+    if (result.assets && result.assets.length > 0) {
+      const file = result.assets[0];
+      setImageUri(file.uri || null);
+      setImageFile({
+        uri: file.uri,
+        type: file.type,
+        name: file.fileName,
+      });
+    }
   };
 
-  const handleTakePhoto = () => {
-    launchCamera(
-      {
-        mediaType: 'photo',
-        cameraType: 'back',
-        saveToPhotos: true,
-      },
-      response => {
-        if (response.didCancel) {
-          console.log('User cancelled camera picker');
-        } else if (response.errorCode) {
-          console.log('Error: ', response.errorMessage);
-        } else {
-          setImageUri(response.assets[0].uri);
-        }
-      },
-    );
+  const handleTakePhoto = async () => {
+    const result = await launchCamera({
+      mediaType: 'photo',
+      includeBase64: false,
+    });
+
+    if (result.assets && result.assets.length > 0) {
+      const file = result.assets[0];
+      setImageUri(file.uri || null);
+      setImageFile({
+        uri: file.uri,
+        type: file.type,
+        name: file.fileName,
+      });
+    }
   };
 
-  return {imageUri, handleImageSelect, handleTakePhoto};
+  return {imageUri, imageFile, handleImageSelect, handleTakePhoto};
 };

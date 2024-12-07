@@ -1,21 +1,34 @@
+import React from 'react';
 import {StyleSheet, TouchableOpacity, View, Image, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useTheme} from '../context/ThemeContext';
 import {useImagePicker} from '../hooks/useImagePicker';
+import {FileType} from '../common/types/FileTypes';
 
-export const CircleImage = () => {
-  const {imageUri, handleImageSelect, handleTakePhoto} = useImagePicker();
+export const CircleImage = ({
+  onFileSelected,
+}: {
+  onFileSelected: (file: FileType | null) => void;
+}) => {
+  const {imageUri, imageFile, handleImageSelect, handleTakePhoto} =
+    useImagePicker();
   const {darkMode} = useTheme();
 
   const handleIconPress = () => {
     Alert.alert('Choose an option', 'Select a method to pick an image', [
       {
         text: 'Camera',
-        onPress: handleTakePhoto,
+        onPress: async () => {
+          await handleTakePhoto();
+          onFileSelected(imageFile);
+        },
       },
       {
         text: 'Gallery',
-        onPress: handleImageSelect,
+        onPress: async () => {
+          await handleImageSelect();
+          onFileSelected(imageFile);
+        },
       },
       {
         text: 'Cancel',
@@ -27,12 +40,21 @@ export const CircleImage = () => {
   return (
     <View style={CircleImageStyles.container}>
       <TouchableOpacity onPress={handleIconPress}>
-        <Image source={{uri: imageUri}} style={CircleImageStyles.image} />
+        {imageUri ? (
+          <Image source={{uri: imageUri}} style={CircleImageStyles.image} />
+        ) : (
+          <Icon
+            name="person-circle-outline"
+            size={110}
+            color={darkMode ? '#fff' : '#000'}
+          />
+        )}
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={handleIconPress}>
+      <TouchableOpacity
+        onPress={handleIconPress}
+        style={CircleImageStyles.addIcon}>
         <Icon
-          style={[CircleImageStyles.icon, CircleImageStyles.addIcon]}
           name="add-circle-outline"
           size={30}
           color={darkMode ? '#fff' : '#000'}
@@ -45,8 +67,8 @@ export const CircleImage = () => {
 const CircleImageStyles = StyleSheet.create({
   container: {
     width: 100,
-    height: 100,
-    borderRadius: 100 / 2,
+    height: 110,
+    borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
@@ -54,17 +76,14 @@ const CircleImageStyles = StyleSheet.create({
   image: {
     width: 100,
     height: 100,
-    borderRadius: 100 / 2,
+    borderRadius: 50,
     resizeMode: 'cover',
-  },
-  icon: {
-    position: 'absolute',
-    bottom: -8,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    padding: 3,
-    borderRadius: 20,
+    zIndex: 1,
   },
   addIcon: {
-    left: 20,
+    position: 'absolute',
+    bottom: -5,
+    right: -14,
+    zIndex: 2,
   },
 });

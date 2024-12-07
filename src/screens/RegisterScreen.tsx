@@ -17,6 +17,7 @@ import Loading from '../components/loading';
 import {useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../common/types/Navigation-types';
 import {StackNavigationProp} from '@react-navigation/stack';
+import {FileType} from '../common/types/FileTypes';
 
 type FormData = {
   name: string;
@@ -39,9 +40,12 @@ const RegisterScreen = () => {
     password: '',
     confirmPassword: '',
   });
-
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<FileType | null>(null);
+  const handleFileSelection = (file: FileType | null) => {
+    setSelectedFile(file);
+  };
 
   const {theme} = useTheme();
   const {registerUser, loading, error, success} = useAuth();
@@ -65,6 +69,7 @@ const RegisterScreen = () => {
       formData.email,
       formData.password,
       formData.number,
+      selectedFile,
     );
 
     if (success) {
@@ -86,7 +91,7 @@ const RegisterScreen = () => {
         {backgroundColor: theme.colors.backgrounds},
       ]}>
       <View style={AuthStyles.titleContainer}>
-        <CircleImage />
+        <CircleImage onFileSelected={handleFileSelection} />
         <View style={AuthStyles.formUpContainer}>
           <Text style={[AuthStyles.title, {color: theme.colors.texts}]}>
             Sign up
