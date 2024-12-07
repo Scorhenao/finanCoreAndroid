@@ -75,7 +75,7 @@ const RegisterScreen = () => {
                   ]}
                   value={formData.name}
                   onChangeText={text => handleChange('name', text)}
-                  placeholder="Enter your name"
+                  placeholder="your name: "
                   placeholderTextColor={theme.colors.texts}
                 />
               </View>
@@ -101,7 +101,7 @@ const RegisterScreen = () => {
                   ]}
                   value={formData.number}
                   onChangeText={text => handleChange('number', text)}
-                  placeholder="Enter your number"
+                  placeholder="your number: "
                   placeholderTextColor={theme.colors.texts}
                 />
               </View>
@@ -123,7 +123,7 @@ const RegisterScreen = () => {
             ]}
             value={formData.email}
             onChangeText={text => handleChange('email', text)}
-            placeholder="Enter your email"
+            placeholder="your email: "
             placeholderTextColor={theme.colors.texts}
           />
         </View>
@@ -146,7 +146,7 @@ const RegisterScreen = () => {
             ]}
             value={formData.password}
             onChangeText={text => handleChange('password', text)}
-            placeholder="Enter your password"
+            placeholder="your password: "
             secureTextEntry={!passwordVisible}
             placeholderTextColor={theme.colors.texts}
           />
@@ -178,7 +178,7 @@ const RegisterScreen = () => {
             ]}
             value={formData.confirmPassword}
             onChangeText={text => handleChange('confirmPassword', text)}
-            placeholder="Confirm your password"
+            placeholder="Confirm your password: "
             secureTextEntry={!confirmPasswordVisible}
             placeholderTextColor={theme.colors.texts}
           />

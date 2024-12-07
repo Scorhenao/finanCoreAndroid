@@ -60,4 +60,14 @@ export const AuthStyles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 16,
   },
+  rememberPasswordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  rememberPasswordText: {
+    marginLeft: 10,
+    fontSize: 16,
+  },
 });

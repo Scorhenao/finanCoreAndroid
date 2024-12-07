@@ -6,6 +6,7 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
+  Switch,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useTheme} from '../context/ThemeContext';
@@ -18,6 +19,7 @@ const LoginScreen = () => {
   });
 
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [rememberPassword, setRememberPassword] = useState(false);
 
   const {theme} = useTheme();
 
@@ -46,7 +48,6 @@ const LoginScreen = () => {
         </View>
       </View>
 
-      {/* Email Input */}
       <View style={AuthStyles.inputGroup}>
         <Text style={[AuthStyles.label, {color: theme.colors.texts}]}>
           Email:
@@ -60,7 +61,7 @@ const LoginScreen = () => {
             ]}
             value={formData.email}
             onChangeText={text => handleChange('email', text)}
-            placeholder="Enter your email"
+            placeholder="Enter your email: "
             placeholderTextColor={theme.colors.texts}
           />
         </View>
@@ -84,7 +85,7 @@ const LoginScreen = () => {
             ]}
             value={formData.password}
             onChangeText={text => handleChange('password', text)}
-            placeholder="Enter your password"
+            placeholder="Enter your password: "
             secureTextEntry={!passwordVisible}
             placeholderTextColor={theme.colors.texts}
           />
@@ -99,7 +100,18 @@ const LoginScreen = () => {
         </View>
       </View>
 
-      {/* Submit Button */}
+      <View style={AuthStyles.rememberPasswordContainer}>
+        <Switch
+          value={rememberPassword}
+          onValueChange={setRememberPassword}
+          trackColor={{false: theme.colors.inputs, true: theme.colors.buttons}}
+          thumbColor={rememberPassword ? theme.colors.texts : '#f4f3f4'}
+        />
+        <Text style={[AuthStyles.label, {color: theme.colors.texts}]}>
+          Remember Password
+        </Text>
+      </View>
+
       <Button
         title="Login"
         onPress={handleSubmit}
