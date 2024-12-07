@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import RegisterScreen from './RegisterScreen';
@@ -16,7 +17,6 @@ export default function AppNavigator() {
 
   return (
     <Stack.Navigator initialRouteName="RegisterScreen">
-      {/* Login Screen */}
       <Stack.Screen
         name="LoginScreen"
         component={LoginScreen}
@@ -35,7 +35,7 @@ export default function AppNavigator() {
               onPress={() => navigation.navigate('RegisterScreen')}
               style={{marginLeft: 16}}>
               <Ionicons
-                name="return-down-back" // Flecha hacia atrás para LoginScreen
+                name="return-down-back"
                 size={28}
                 color={theme.colors.texts}
               />
@@ -56,7 +56,6 @@ export default function AppNavigator() {
           headerTintColor: theme.colors.texts,
         })}
       />
-      {/* Register Screen */}
       <Stack.Screen
         name="RegisterScreen"
         component={RegisterScreen}
@@ -80,7 +79,7 @@ export default function AppNavigator() {
               onPress={() => navigation.navigate('LoginScreen')}
               style={{marginRight: 16}}>
               <Ionicons
-                name="return-down-forward" // Flecha hacia adelante para RegisterScreen
+                name="return-down-forward"
                 size={28}
                 color={theme.colors.texts}
               />

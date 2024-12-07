@@ -15,6 +15,11 @@ export const AppNavigatorStyles = StyleSheet.create({
   headerLeft: {
     marginLeft: 10,
   },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 16,
+  },
   gradientStyle: {
     flex: 1,
     height: '100%',
