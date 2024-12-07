@@ -11,6 +11,17 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useTheme} from '../context/ThemeContext';
 import {AuthStyles} from '../css/AuthStyles';
+import {useAuth} from '../hooks/useAuth';
+import {notify} from '../components/NotificationManager';
+import Loading from '../components/loading';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParamList} from '../common/types/Navigation-types';
+import {useNavigation} from '@react-navigation/native';
+
+type LoginScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'LoginScreen'
+>;
 
 const LoginScreen = () => {
   const [formData, setFormData] = useState({
@@ -18,20 +29,38 @@ const LoginScreen = () => {
     password: '',
   });
 
+  const navigation = useNavigation<LoginScreenNavigationProp>();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [rememberPassword, setRememberPassword] = useState(false);
 
   const {theme} = useTheme();
+  const {loginUser, loading, error, success} = useAuth();
 
-  const handleChange = (name, value) => {
+  const handleChange = (name: string, value: string) => {
     setFormData({
       ...formData,
       [name]: value,
     });
   };
 
-  const handleSubmit = () => {
-    console.log(formData);
+  const handleSubmit = async () => {
+    if (!formData.email || !formData.password) {
+      notify('warning', 'Please enter both email and password');
+      return;
+    }
+
+    await loginUser(formData.email, formData.password);
+
+    // Verifica si el estado de éxito está siendo actualizado correctamente
+    console.log('Success:', success); // Asegúrate de que success sea true
+
+    if (success) {
+      notify('success', 'Login successful', 'Welcome back!');
+      navigation.navigate('HomeScreen');
+    } else if (error) {
+      console.log('Error:', error);
+      notify('danger', 'Login failed', error);
+    }
   };
 
   return (
@@ -47,7 +76,6 @@ const LoginScreen = () => {
           </Text>
         </View>
       </View>
-
       <View style={AuthStyles.inputGroup}>
         <Text style={[AuthStyles.label, {color: theme.colors.texts}]}>
           Email:
@@ -66,7 +94,6 @@ const LoginScreen = () => {
           />
         </View>
       </View>
-
       {/* Password Input */}
       <View style={AuthStyles.inputGroup}>
         <Text style={[AuthStyles.label, {color: theme.colors.texts}]}>
@@ -99,7 +126,6 @@ const LoginScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-
       <View style={AuthStyles.rememberPasswordContainer}>
         <Switch
           value={rememberPassword}
@@ -111,12 +137,12 @@ const LoginScreen = () => {
           Remember Password
         </Text>
       </View>
-
       <Button
         title="Login"
         onPress={handleSubmit}
         color={theme.colors.buttons}
       />
+      {loading && <Loading />}
     </ScrollView>
   );
 };

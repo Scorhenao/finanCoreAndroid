@@ -3,6 +3,7 @@ import axios from 'axios';
 import {FileType} from '../common/types/FileTypes';
 
 const API_URL = 'https://api-financore.onrender.com/api/auth/register';
+const LOGIN_URL = 'https://api-financore.onrender.com/api/auth/login';
 
 export const useAuth = () => {
   const [loading, setLoading] = useState(false);
@@ -51,8 +52,55 @@ export const useAuth = () => {
     }
   };
 
+  const loginUser = async (email: string, password: string) => {
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      const response = await axios.post(
+        LOGIN_URL,
+        {
+          email,
+          password,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      console.log('Response received: ', response);
+
+      // Verifica si el accessToken está presente en la respuesta
+      if (response.status === 200 || response.status === 201) {
+        const {accessToken} = response.data;
+
+        // Si el token existe, el login es exitoso
+        if (accessToken) {
+          setSuccess(true);
+          console.log('User logged in successfully:', response.data);
+        } else {
+          setError('No access token received');
+          console.log('No access token received');
+        }
+      } else {
+        setError('Unexpected response status');
+        console.log('Unexpected response status', response.status);
+      }
+    } catch (err: any) {
+      console.error('Error: ', err);
+      setError(err.response?.data?.message || 'An error occurred');
+    } finally {
+      setLoading(false);
+      console.log('Loading completed');
+    }
+  };
+
   return {
     registerUser,
+    loginUser,
     loading,
     error,
     success,

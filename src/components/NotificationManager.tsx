@@ -2,7 +2,7 @@ import React from 'react';
 import FlashMessage, {showMessage} from 'react-native-flash-message';
 
 const NotificationManager = () => {
-  return <FlashMessage position="top" />;
+  return <FlashMessage position="center" />;
 };
 
 export const notify = (
@@ -16,6 +16,7 @@ export const notify = (
     type,
     icon: type,
     duration: 3000,
+    style: {marginTop: 50},
   });
 };
 

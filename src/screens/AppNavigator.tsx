@@ -9,6 +9,7 @@ import {Image, View, TouchableOpacity} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {AppNavigatorStyles} from '../css/AppNavigatorStyles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import HomeScreen from '../screens/HomeScreen';
 
 const Stack = createStackNavigator();
 
@@ -17,6 +18,29 @@ export default function AppNavigator() {
 
   return (
     <Stack.Navigator initialRouteName="RegisterScreen">
+      <Stack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{
+          headerTitle: () => (
+            <View style={AppNavigatorStyles.logoContainer}>
+              <Image
+                source={require('../assets/logo.png')}
+                style={AppNavigatorStyles.logoImage}
+              />
+            </View>
+          ),
+          headerTitleAlign: 'center',
+          headerStyle: AppNavigatorStyles.headerStyle,
+          headerBackground: () => (
+            <LinearGradient
+              colors={[theme.colors.backgrounds, theme.colors.texts]}
+              style={AppNavigatorStyles.gradientStyle}
+            />
+          ),
+          headerTintColor: theme.colors.texts,
+        }}
+      />
       <Stack.Screen
         name="LoginScreen"
         component={LoginScreen}

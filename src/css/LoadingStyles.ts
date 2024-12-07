@@ -13,7 +13,7 @@ export const LoadingStyles = StyleSheet.create({
   icon: {
     fontSize: 60,
     fontWeight: 'bold',
-    color: '#0D6EFD',
+    color: '#45725c',
   },
   loadingText: {
     marginTop: 20,

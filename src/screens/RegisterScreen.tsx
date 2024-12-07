@@ -14,6 +14,9 @@ import {AuthStyles} from '../css/AuthStyles';
 import {useAuth} from '../hooks/useAuth';
 import {notify} from '../components/NotificationManager';
 import Loading from '../components/loading';
+import {useNavigation} from '@react-navigation/native';
+import {RootStackParamList} from '../common/types/Navigation-types';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 type FormData = {
   name: string;
@@ -22,6 +25,11 @@ type FormData = {
   password: string;
   confirmPassword: string;
 };
+
+type RegisterScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'RegisterScreen'
+>;
 
 const RegisterScreen = () => {
   const [formData, setFormData] = useState<FormData>({
@@ -36,8 +44,8 @@ const RegisterScreen = () => {
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   const {theme} = useTheme();
-
   const {registerUser, loading, error, success} = useAuth();
+  const navigation = useNavigation<RegisterScreenNavigationProp>();
 
   const handleChange = (name: keyof FormData, value: string) => {
     setFormData({
@@ -61,6 +69,7 @@ const RegisterScreen = () => {
 
     if (success) {
       notify('success', 'Registration successful');
+      navigation.navigate('LoginScreen');
     } else if (error) {
       notify('danger', `Error: ${error}`);
     }
