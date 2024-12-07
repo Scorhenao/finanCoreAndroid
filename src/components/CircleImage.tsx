@@ -1,50 +1,13 @@
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Text,
-  Image,
-  Alert,
-} from 'react-native';
-import {launchCamera} from 'react-native-image-picker';
-import {launchImageLibrary} from 'react-native-image-picker';
+import {StyleSheet, TouchableOpacity, View, Image, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useTheme} from '../context/ThemeContext';
-import {useState} from 'react';
+import {useImagePicker} from '../hooks/useImagePicker';
 
 export const CircleImage = () => {
-  const [imageUri, setImageUri] = useState('https://i.pravatar.cc/100');
+  const {imageUri, handleImageSelect, handleTakePhoto} = useImagePicker();
   const {darkMode} = useTheme();
 
-  const handleImageSelect = () => {
-    launchImageLibrary({mediaType: 'photo'}, response => {
-      if (response.assets && response.assets.length > 0) {
-        setImageUri(response.assets[0].uri);
-      }
-    });
-  };
-
-  const handleTakePhoto = () => {
-    launchCamera(
-      {
-        mediaType: 'photo',
-        cameraType: 'back', // Puedes especificar 'front' para la cámara frontal
-        saveToPhotos: true, // Guardar la foto en el álbum del dispositivo
-      },
-      response => {
-        if (response.didCancel) {
-          console.log('User cancelled camera picker');
-        } else if (response.errorCode) {
-          console.log('Error: ', response.errorMessage);
-        } else {
-          setImageUri(response.assets[0].uri); // Establecer la URI de la foto tomada
-        }
-      },
-    );
-  };
-
   const handleIconPress = () => {
-    // Mostrar un menú para seleccionar entre cámara o galería
     Alert.alert('Choose an option', 'Select a method to pick an image', [
       {
         text: 'Camera',
