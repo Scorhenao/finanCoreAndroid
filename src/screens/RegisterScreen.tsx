@@ -6,14 +6,13 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
-  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useTheme} from '../context/ThemeContext';
 import {CircleImage} from '../components/CircleImage';
 import {AuthStyles} from '../css/AuthStyles';
 import {useAuth} from '../hooks/useAuth';
-import {Alert} from 'react-native';
+import {notify} from '../components/NotificationManager';
 import Loading from '../components/loading';
 
 type FormData = {
@@ -38,7 +37,6 @@ const RegisterScreen = () => {
 
   const {theme} = useTheme();
 
-  // Usa el hook useAuth
   const {registerUser, loading, error, success} = useAuth();
 
   const handleChange = (name: keyof FormData, value: string) => {
@@ -50,7 +48,7 @@ const RegisterScreen = () => {
 
   const handleSubmit = async () => {
     if (formData.password !== formData.confirmPassword) {
-      Alert.alert('Passwords do not match');
+      notify('danger', 'Passwords do not match');
       return;
     }
 
@@ -62,9 +60,9 @@ const RegisterScreen = () => {
     );
 
     if (success) {
-      Alert.alert('Registration successful');
+      notify('success', 'Registration successful');
     } else if (error) {
-      Alert.alert(`Error: ${error}`);
+      notify('danger', `Error: ${error}`);
     }
   };
 
