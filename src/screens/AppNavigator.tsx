@@ -39,6 +39,11 @@ export default function AppNavigator() {
             />
           ),
           headerTintColor: theme.colors.texts,
+          headerLeft: () => (
+            <View style={AppNavigatorStyles.headerLeft}>
+              <DarkModeToggle />
+            </View>
+          ),
         }}
       />
       <Stack.Screen
