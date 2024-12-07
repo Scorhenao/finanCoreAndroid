@@ -27,7 +27,7 @@ const Loading = () => {
         style={[LoadingStyles.animatedContainer, {transform: [{rotate}]}]}>
         <Text style={LoadingStyles.icon}>$</Text>
       </Animated.View>
-      <Text style={LoadingStyles.loadingText}>Cargando...</Text>
+      <Text style={LoadingStyles.loadingText}>Loading...</Text>
     </View>
   );
 };

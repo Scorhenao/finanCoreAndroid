@@ -6,35 +6,66 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useTheme} from '../context/ThemeContext';
 import {CircleImage} from '../components/CircleImage';
 import {AuthStyles} from '../css/AuthStyles';
+import {useAuth} from '../hooks/useAuth';
+import {Alert} from 'react-native';
+import Loading from '../components/loading';
+
+type FormData = {
+  name: string;
+  number: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 
 const RegisterScreen = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     number: '',
     email: '',
     password: '',
     confirmPassword: '',
-    recoveryPassword: '',
   });
 
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
-  const {darkMode, theme} = useTheme();
-  const handleChange = (name, value) => {
+  const {theme} = useTheme();
+
+  // Usa el hook useAuth
+  const {registerUser, loading, error, success} = useAuth();
+
+  const handleChange = (name: keyof FormData, value: string) => {
     setFormData({
       ...formData,
       [name]: value,
     });
   };
 
-  const handleSubmit = () => {
-    console.log(formData);
+  const handleSubmit = async () => {
+    if (formData.password !== formData.confirmPassword) {
+      Alert.alert('Passwords do not match');
+      return;
+    }
+
+    await registerUser(
+      formData.name,
+      formData.email,
+      formData.password,
+      formData.number,
+    );
+
+    if (success) {
+      Alert.alert('Registration successful');
+    } else if (error) {
+      Alert.alert(`Error: ${error}`);
+    }
   };
 
   const handleRecoveryPassword = () => {
@@ -75,7 +106,7 @@ const RegisterScreen = () => {
                   ]}
                   value={formData.name}
                   onChangeText={text => handleChange('name', text)}
-                  placeholder="your name: "
+                  placeholder="Your name"
                   placeholderTextColor={theme.colors.texts}
                 />
               </View>
@@ -101,7 +132,7 @@ const RegisterScreen = () => {
                   ]}
                   value={formData.number}
                   onChangeText={text => handleChange('number', text)}
-                  placeholder="your number: "
+                  placeholder="Your number"
                   placeholderTextColor={theme.colors.texts}
                 />
               </View>
@@ -123,7 +154,7 @@ const RegisterScreen = () => {
             ]}
             value={formData.email}
             onChangeText={text => handleChange('email', text)}
-            placeholder="your email: "
+            placeholder="Your email"
             placeholderTextColor={theme.colors.texts}
           />
         </View>
@@ -146,7 +177,7 @@ const RegisterScreen = () => {
             ]}
             value={formData.password}
             onChangeText={text => handleChange('password', text)}
-            placeholder="your password: "
+            placeholder="Your password"
             secureTextEntry={!passwordVisible}
             placeholderTextColor={theme.colors.texts}
           />
@@ -178,7 +209,7 @@ const RegisterScreen = () => {
             ]}
             value={formData.confirmPassword}
             onChangeText={text => handleChange('confirmPassword', text)}
-            placeholder="Confirm your password: "
+            placeholder="Confirm your password"
             secureTextEntry={!confirmPasswordVisible}
             placeholderTextColor={theme.colors.texts}
           />
@@ -193,7 +224,6 @@ const RegisterScreen = () => {
         </View>
       </View>
 
-      {/* Recovery Password Button */}
       <View style={AuthStyles.inputGroup}>
         <TouchableOpacity
           onPress={handleRecoveryPassword}
@@ -209,11 +239,15 @@ const RegisterScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <Button
-        title="Register"
-        onPress={handleSubmit}
-        color={theme.colors.buttons}
-      />
+      {loading ? (
+        <Loading />
+      ) : (
+        <Button
+          title="Register"
+          onPress={handleSubmit}
+          color={theme.colors.buttons}
+        />
+      )}
     </ScrollView>
   );
 };

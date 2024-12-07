@@ -1,14 +1,21 @@
 import {useState} from 'react';
 import axios from 'axios';
+import {FileType} from '../common/types/FileTypes';
 
 const API_URL = 'https://api-financore.onrender.com/api/auth/register';
 
 export const useAuth = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const registerUser = async (name, email, password, phone, file = null) => {
+  const registerUser = async (
+    name: string,
+    email: string,
+    password: string,
+    phone: string,
+    file: FileType | null = null,
+  ) => {
     setLoading(true);
     setError(null);
     setSuccess(false);
@@ -37,7 +44,7 @@ export const useAuth = () => {
       if (response.status === 201) {
         setSuccess(true);
       }
-    } catch (err) {
+    } catch (err: any) {
       setError(err.response?.data?.message || 'An error occurred');
     } finally {
       setLoading(false);
