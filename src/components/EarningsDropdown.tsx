@@ -21,24 +21,20 @@ const EarningsDropdown = () => {
         />
       </TouchableOpacity>
 
-      {/* Dropdown Menu */}
       {isOpen && (
         <View style={styles.menu}>
-          {/* Free Salary */}
           <View style={styles.menuItem}>
             <Text style={styles.menuText}>Free Salary: 10000</Text>
           </View>
 
-          {/* Add Budget */}
           <TouchableOpacity style={styles.menuItem}>
             <Icon name="add-circle-outline" size={20} color="#000" />
             <Text style={styles.menuText}>Add Budget</Text>
           </TouchableOpacity>
 
-          {/* See More */}
-          <TouchableOpacity style={styles.menuItem}>
-            <Icon name="ellipsis-horizontal" size={20} color="#000" />
+          <TouchableOpacity style={styles.menuItemSeeMore}>
             <Text style={styles.menuText}>See More</Text>
+            <Icon name="ellipsis-horizontal" size={20} color="#000" />
           </TouchableOpacity>
         </View>
       )}
@@ -73,6 +69,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+  },
+  menuItemSeeMore: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    marginLeft: 180,
+    gap: 10,
   },
   menuText: {
     fontSize: 14,

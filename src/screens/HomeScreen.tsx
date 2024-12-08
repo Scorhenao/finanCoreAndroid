@@ -14,7 +14,7 @@ const HomeScreen = () => {
   ];
 
   const keys = ['apples', 'bananas'];
-  const colors = ['#ff6347', '#ffcc00'];
+  const colors = [theme.colors.hovers, theme.colors.buttons];
 
   return (
     <ScrollView
