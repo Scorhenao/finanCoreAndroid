@@ -9,6 +9,7 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
 
   const registerUser = async (
     name: string,
@@ -55,7 +56,10 @@ export const useAuth = () => {
     }
   };
 
-  const loginUser = async (email: string, password: string) => {
+  const loginUser = async (
+    email: string,
+    password: string,
+  ): Promise<boolean> => {
     setLoading(true);
     setError(null);
     setSuccess(false);
@@ -63,39 +67,29 @@ export const useAuth = () => {
     try {
       const response = await axios.post(
         LOGIN_URL,
-        {
-          email,
-          password,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
+        {email, password},
+        {headers: {'Content-Type': 'application/json'}},
       );
-
-      console.log('Response received: ', response);
 
       if (response.status === 200 || response.status === 201) {
         const {accessToken} = response.data;
-
         if (accessToken) {
           setSuccess(true);
-          console.log('User logged in successfully:', response.data);
+          setToken(accessToken);
+          return true;
         } else {
           setError('No access token received');
-          console.log('No access token received');
+          return false;
         }
       } else {
         setError('Unexpected response status');
-        console.log('Unexpected response status', response.status);
+        return false;
       }
     } catch (err: any) {
-      console.error('Error: ', err);
       setError(err.response?.data?.message || 'An error occurred');
+      return false;
     } finally {
       setLoading(false);
-      console.log('Loading completed');
     }
   };
 
@@ -105,5 +99,6 @@ export const useAuth = () => {
     loading,
     error,
     success,
+    token,
   };
 };

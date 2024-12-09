@@ -49,16 +49,12 @@ const LoginScreen = () => {
       return;
     }
 
-    await loginUser(formData.email, formData.password);
+    const loginSuccess = await loginUser(formData.email, formData.password);
 
-    // Verifica si el estado de éxito está siendo actualizado correctamente
-    console.log('Success:', success); // Asegúrate de que success sea true
-
-    if (success) {
+    if (loginSuccess) {
       notify('success', 'Login successful', 'Welcome back!');
       navigation.navigate('HomeScreen');
     } else if (error) {
-      console.log('Error:', error);
       notify('danger', 'Login failed', error);
     }
   };
