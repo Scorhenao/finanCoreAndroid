@@ -3,6 +3,7 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useEarnings} from '../hooks/useEarnings';
 import {useAuthContext} from '../context/AuthContext';
+import {useNavigation} from '@react-navigation/native';
 import Loading from './loading';
 import {Earning} from '../common/interfaces/earning.interface';
 
@@ -10,6 +11,7 @@ const EarningsDropdown = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const {token} = useAuthContext();
   const {earnings, loading, error, fetchEarnings} = useEarnings();
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (token) {
@@ -33,8 +35,8 @@ const EarningsDropdown = () => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-  const handleAddBudget = () => {
-    console.log('Adding budget...');
+  const handleSeeMore = (earning: Earning) => {
+    navigation.navigate('SeeMoreEarningScreen', {earning});
   };
 
   return (
@@ -78,16 +80,9 @@ const EarningsDropdown = () => {
                   </Text>
                 </View>
 
-                {token && (
-                  <TouchableOpacity
-                    style={styles.menuItem}
-                    onPress={handleAddBudget}>
-                    <Icon name="add-circle-outline" size={20} color="#000" />
-                    <Text style={styles.menuText}>Add Budget</Text>
-                  </TouchableOpacity>
-                )}
-
-                <TouchableOpacity style={styles.menuItemSeeMore}>
+                <TouchableOpacity
+                  style={styles.menuItemSeeMore}
+                  onPress={() => handleSeeMore(earning)}>
                   <Text style={styles.menuText}>See More</Text>
                   <Icon name="ellipsis-horizontal" size={20} color="#000" />
                 </TouchableOpacity>
@@ -146,10 +141,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: 'red',
-    textAlign: 'center',
-  },
-  infoText: {
-    color: '#666',
     textAlign: 'center',
   },
 });

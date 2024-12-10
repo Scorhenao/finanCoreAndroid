@@ -12,6 +12,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import DarkModeToggle from '../components/ToggleTheme';
 import {useTheme} from '../context/ThemeContext';
 import {useNavigation} from '@react-navigation/native';
+import SeeMoreEarningScreen from './SeeMoreEarningScreen';
 
 const Stack = createStackNavigator();
 
@@ -138,6 +139,33 @@ export default function AppNavigator() {
           ),
           headerTintColor: theme.colors.texts,
         })}
+      />
+      <Stack.Screen
+        name="SeeMoreEarningScreen"
+        component={SeeMoreEarningScreen}
+        options={{
+          headerTitle: 'Earning Details',
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('HomeScreen')}
+              style={{marginLeft: 16}}>
+              {/* Usa un ícono diferente */}
+              <Ionicons
+                name="chevron-back-outline"
+                size={28}
+                color={theme.colors.texts}
+              />
+            </TouchableOpacity>
+          ),
+          headerStyle: AppNavigatorStyles.headerStyle,
+          headerBackground: () => (
+            <LinearGradient
+              colors={[theme.colors.backgrounds, theme.colors.texts]}
+              style={AppNavigatorStyles.gradientStyle}
+            />
+          ),
+          headerTintColor: theme.colors.texts,
+        }}
       />
     </Stack.Navigator>
   );
