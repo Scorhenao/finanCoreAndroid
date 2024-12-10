@@ -1,15 +1,48 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import axios from 'axios';
 import {FileType} from '../common/types/FileTypes';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const API_URL = 'https://api-financore.onrender.com/api/auth/register';
 const LOGIN_URL = 'https://api-financore.onrender.com/api/auth/login';
 
-export const useAuth = () => {
+export interface AuthContextType {
+  registerUser: (
+    name: string,
+    email: string,
+    password: string,
+    phone: string,
+    profilePicture: FileType | null,
+  ) => Promise<void>;
+  loginUser: (email: string, password: string) => Promise<boolean>;
+  loading: boolean;
+  error: string | null;
+  success: boolean;
+  token: string | null;
+}
+
+export const useAuth = (): AuthContextType => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [token, setToken] = useState<string | null>(null);
+
+  // Recuperar el token de AsyncStorage al cargar el componente
+  useEffect(() => {
+    const loadToken = async () => {
+      try {
+        const storedToken = await AsyncStorage.getItem('token');
+        if (storedToken) {
+          setToken(storedToken);
+          console.log('Token cargado desde AsyncStorage:', storedToken);
+        }
+      } catch (error) {
+        console.error('Error al cargar el token de AsyncStorage:', error);
+      }
+    };
+
+    loadToken();
+  }, []);
 
   const registerUser = async (
     name: string,
@@ -76,6 +109,9 @@ export const useAuth = () => {
         if (accessToken) {
           setSuccess(true);
           setToken(accessToken);
+          console.log('Token received:', accessToken);
+
+          await AsyncStorage.setItem('token', accessToken);
           return true;
         } else {
           setError('No access token received');

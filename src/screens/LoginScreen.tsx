@@ -34,7 +34,7 @@ const LoginScreen = () => {
   const [rememberPassword, setRememberPassword] = useState(false);
 
   const {theme} = useTheme();
-  const {loginUser, loading, error, success} = useAuth();
+  const {loginUser, loading, error} = useAuth();
 
   const handleChange = (name: string, value: string) => {
     setFormData({

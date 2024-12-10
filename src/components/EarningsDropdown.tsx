@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,15 +8,18 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useEarnings} from '../hooks/useEarnings';
-import {useAuth} from '../hooks/useAuth';
+import {useAuthContext} from '../context/AuthContext';
+
 const EarningsDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const {token} = useAuth();
-  const {earnings, loading, error} = useEarnings(token);
+  const {token} = useAuthContext();
+  const {earnings, loading, error, fetchEarnings} = useEarnings();
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
+  useEffect(() => {
+    if (token) {
+      fetchEarnings();
+    }
+  }, [token, fetchEarnings]);
 
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
@@ -29,6 +32,10 @@ const EarningsDropdown = () => {
   if (!earnings.length) {
     return <Text style={styles.infoText}>No earnings available</Text>;
   }
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
 
   return (
     <View style={styles.container}>

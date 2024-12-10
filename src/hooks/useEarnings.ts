@@ -1,9 +1,11 @@
 import {useState, useEffect, useCallback} from 'react';
 import axios from 'axios';
+import {useAuthContext} from '../context/AuthContext';
 
 const EARNINGS_URL = 'https://api-financore.onrender.com/api/earnings';
 
-export const useEarnings = (token: string | null) => {
+export const useEarnings = () => {
+  const {token} = useAuthContext();
   const [earnings, setEarnings] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -11,6 +13,7 @@ export const useEarnings = (token: string | null) => {
   const fetchEarnings = useCallback(async () => {
     if (!token) {
       setError('No token provided');
+      console.log('No token available in useAuthContext');
       return;
     }
 
