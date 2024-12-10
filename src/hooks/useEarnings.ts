@@ -28,7 +28,7 @@ export const useEarnings = () => {
         },
       });
 
-      console.log(response.data); // Verifica los datos que llegan
+      console.log(response.data);
       if (response.status === 200) {
         setEarnings(response.data);
       } else {

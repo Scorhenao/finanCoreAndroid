@@ -25,11 +25,10 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     }
   }, [auth.token]);
 
-  // Función de logout que elimina el token y redirige a LoginScreen
   const logout = async (navigation: any) => {
     await AsyncStorage.removeItem('accessToken');
-    setToken(null); // Limpia el estado del token
-    navigation.navigate('LoginScreen'); // Redirige a la pantalla de login
+    setToken(null);
+    navigation.navigate('LoginScreen');
   };
 
   return (

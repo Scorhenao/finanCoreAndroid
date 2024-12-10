@@ -4,6 +4,7 @@ import {RouteProp} from '@react-navigation/native';
 import {RootStackParamList} from '../common/types/Navigation-types';
 import {useRoute} from '@react-navigation/native';
 import {useTheme} from '../context/ThemeContext';
+import {parseDate} from '../common/utils/parseDate';
 
 type SeeMoreEarningRouteProp = RouteProp<
   RootStackParamList,
@@ -15,6 +16,8 @@ const SeeMoreEarningScreen = () => {
   const {earning} = route.params;
   const {theme} = useTheme();
 
+  const parseCreatedAt = parseDate(earning.createdAt);
+  const parseUpdatedAt = parseDate(earning.updatedAt);
   return (
     <ScrollView
       style={[styles.container, {backgroundColor: theme.colors.backgrounds}]}>
@@ -38,10 +41,10 @@ const SeeMoreEarningScreen = () => {
           General Amount: {earning.generalAmount}
         </Text>
         <Text style={[styles.detailText, {color: theme.colors.texts}]}>
-          Created At: {earning.createAt}
+          Created At: {parseCreatedAt}
         </Text>
         <Text style={[styles.detailText, {color: theme.colors.texts}]}>
-          Updated At: {earning.updateAt}
+          Updated At: {parseUpdatedAt}
         </Text>
       </View>
     </ScrollView>

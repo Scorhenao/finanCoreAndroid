@@ -3,8 +3,8 @@ export interface Earning {
   name: string;
   startDate: string;
   endDate: string;
-  createAt: string;
-  updateAt: string;
+  createdAt: string;
+  updatedAt: string;
   amountBudgeted: string;
   generalAmount: string;
 }
