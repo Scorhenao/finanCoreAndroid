@@ -16,7 +16,7 @@ export const notify = (
     type,
     icon: type,
     duration: 3000,
-    style: {marginTop: 50},
+    style: {marginTop: 10, zIndex: 1000},
   });
 };
 

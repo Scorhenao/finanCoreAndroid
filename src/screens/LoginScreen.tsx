@@ -12,11 +12,11 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {useTheme} from '../context/ThemeContext';
 import {AuthStyles} from '../css/AuthStyles';
 import {useAuth} from '../hooks/useAuth';
-import {notify} from '../components/NotificationManager';
 import Loading from '../components/loading';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../common/types/Navigation-types';
 import {useNavigation} from '@react-navigation/native';
+import { notify } from '../components/NotificationManager';
 
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,

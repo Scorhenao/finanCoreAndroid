@@ -4,7 +4,6 @@ import AppNavigator from './src/screens/AppNavigator';
 import {ThemeProvider} from './src/context/ThemeContext';
 import {AuthProvider} from './src/context/AuthContext';
 import NotificationManager from './src/components/NotificationManager';
-import FlashMessage from 'react-native-flash-message';
 
 function App(): JSX.Element {
   return (
@@ -12,7 +11,6 @@ function App(): JSX.Element {
       <AuthProvider>
         <NavigationContainer>
           <NotificationManager />
-          <FlashMessage position="center" />
           <AppNavigator />
         </NavigationContainer>
       </AuthProvider>

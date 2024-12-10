@@ -4,13 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {useEarnings} from '../hooks/useEarnings';
 import {useAuthContext} from '../context/AuthContext';
 import Loading from './loading';
-
-interface Earning {
-  id: string;
-  name: string;
-  amountBudgeted: string;
-  generalAmount: string;
-}
+import {Earning} from '../common/interfaces/earning.interface';
 
 const EarningsDropdown = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -31,8 +25,6 @@ const EarningsDropdown = () => {
     return <Text style={styles.errorText}>Error: {error}</Text>;
   }
 
-  console.log('Los earnings cargados son: ', earnings);
-
   if (!Array.isArray(earnings?.data) || earnings.data.length === 0) {
     return <Text style={styles.errorText}>No earnings available</Text>;
   }
@@ -47,7 +39,7 @@ const EarningsDropdown = () => {
 
   return (
     <View style={styles.container}>
-      {earnings.data.map((earning: Earning, index) => {
+      {earnings.data.map((earning: Earning, index: number) => {
         const amountBudgeted = parseFloat(
           earning.amountBudgeted.replace(/[^0-9.-]+/g, ''),
         );

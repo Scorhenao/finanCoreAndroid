@@ -74,6 +74,7 @@ const RegisterScreen = () => {
 
     if (success) {
       notify('success', 'Registration successful');
+      console.log('Registration successful, navigating to Login screen');
       navigation.navigate('LoginScreen');
     } else if (error) {
       notify('danger', `Error: ${error}`);
