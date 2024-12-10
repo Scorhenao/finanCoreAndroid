@@ -48,7 +48,6 @@ const EarningsDropdown = () => {
   return (
     <View style={styles.container}>
       {earnings.data.map((earning: Earning, index) => {
-        // Asegúrate de convertir a números los valores
         const amountBudgeted = parseFloat(
           earning.amountBudgeted.replace(/[^0-9.-]+/g, ''),
         );
@@ -56,7 +55,6 @@ const EarningsDropdown = () => {
           earning.generalAmount.replace(/[^0-9.-]+/g, ''),
         );
 
-        // Calcular el salario libre
         const freeSalary = generalAmount - amountBudgeted;
 
         return (
@@ -75,7 +73,11 @@ const EarningsDropdown = () => {
             {openIndex === index && (
               <View style={styles.menu}>
                 <View style={styles.menuItem}>
-                  <Text style={styles.menuText}>
+                  <Text
+                    style={[
+                      styles.menuText,
+                      freeSalary < 0 && styles.debtText,
+                    ]}>
                     Free Salary:{' '}
                     {freeSalary.toLocaleString('en-US', {
                       style: 'currency',
@@ -146,6 +148,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#000',
     marginLeft: 10,
+  },
+  debtText: {
+    color: 'red',
   },
   errorText: {
     color: 'red',
