@@ -1,23 +1,27 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
+import {useAuthContext} from '../context/AuthContext';
 import RegisterScreen from './RegisterScreen';
 import LoginScreen from './LoginScreen';
-import DarkModeToggle from '../components/ToggleTheme';
-import {useTheme} from '../context/ThemeContext';
+import HomeScreen from '../screens/HomeScreen';
 import {Image, View, TouchableOpacity} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {AppNavigatorStyles} from '../css/AppNavigatorStyles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import HomeScreen from '../screens/HomeScreen';
+import DarkModeToggle from '../components/ToggleTheme';
+import {useTheme} from '../context/ThemeContext';
+import {useNavigation} from '@react-navigation/native';
 
 const Stack = createStackNavigator();
 
 export default function AppNavigator() {
   const {theme} = useTheme();
+  const {token, logout} = useAuthContext();
+  const navigation = useNavigation();
 
   return (
-    <Stack.Navigator initialRouteName="RegisterScreen">
+    <Stack.Navigator initialRouteName={token ? 'HomeScreen' : 'LoginScreen'}>
       <Stack.Screen
         name="HomeScreen"
         component={HomeScreen}
@@ -43,6 +47,17 @@ export default function AppNavigator() {
             <View style={AppNavigatorStyles.headerLeft}>
               <DarkModeToggle />
             </View>
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => logout(navigation)}
+              style={{marginRight: 16}}>
+              <Ionicons
+                name="log-out-outline"
+                size={28}
+                color={theme.colors.texts}
+              />
+            </TouchableOpacity>
           ),
         }}
       />

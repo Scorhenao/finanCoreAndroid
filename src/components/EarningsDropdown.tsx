@@ -1,14 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useEarnings} from '../hooks/useEarnings';
 import {useAuthContext} from '../context/AuthContext';
+import Loading from './loading';
 
 const EarningsDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +17,7 @@ const EarningsDropdown = () => {
   }, [token, fetchEarnings]);
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <Loading />;
   }
 
   if (error) {
@@ -35,6 +30,10 @@ const EarningsDropdown = () => {
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleAddBudget = () => {
+    console.log('Adding budget...');
   };
 
   return (
@@ -69,10 +68,14 @@ const EarningsDropdown = () => {
                   </Text>
                 </View>
 
-                <TouchableOpacity style={styles.menuItem}>
-                  <Icon name="add-circle-outline" size={20} color="#000" />
-                  <Text style={styles.menuText}>Add Budget</Text>
-                </TouchableOpacity>
+                {token && (
+                  <TouchableOpacity
+                    style={styles.menuItem}
+                    onPress={handleAddBudget}>
+                    <Icon name="add-circle-outline" size={20} color="#000" />
+                    <Text style={styles.menuText}>Add Budget</Text>
+                  </TouchableOpacity>
+                )}
 
                 <TouchableOpacity style={styles.menuItemSeeMore}>
                   <Text style={styles.menuText}>See More</Text>

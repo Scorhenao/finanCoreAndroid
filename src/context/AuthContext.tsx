@@ -21,11 +21,19 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
   useEffect(() => {
     if (auth.token) {
       setToken(auth.token);
+      AsyncStorage.setItem('accessToken', auth.token);
     }
   }, [auth.token]);
 
+  // Función de logout que elimina el token y redirige a LoginScreen
+  const logout = async (navigation: any) => {
+    await AsyncStorage.removeItem('accessToken');
+    setToken(null); // Limpia el estado del token
+    navigation.navigate('LoginScreen'); // Redirige a la pantalla de login
+  };
+
   return (
-    <AuthContext.Provider value={{...auth, token}}>
+    <AuthContext.Provider value={{...auth, token, logout}}>
       {children}
     </AuthContext.Provider>
   );
