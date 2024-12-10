@@ -5,8 +5,15 @@ import {useEarnings} from '../hooks/useEarnings';
 import {useAuthContext} from '../context/AuthContext';
 import Loading from './loading';
 
+interface Earning {
+  id: string;
+  name: string;
+  amountBudgeted: string;
+  generalAmount: string;
+}
+
 const EarningsDropdown = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const {token} = useAuthContext();
   const {earnings, loading, error, fetchEarnings} = useEarnings();
 
@@ -24,12 +31,14 @@ const EarningsDropdown = () => {
     return <Text style={styles.errorText}>Error: {error}</Text>;
   }
 
-  if (!earnings.length) {
-    return <Text style={styles.infoText}>No earnings available</Text>;
+  console.log('Los earnings cargados son: ', earnings);
+
+  if (!Array.isArray(earnings?.data) || earnings.data.length === 0) {
+    return <Text style={styles.errorText}>No earnings available</Text>;
   }
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
+  const toggleDropdown = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
   };
 
   const handleAddBudget = () => {
@@ -38,25 +47,32 @@ const EarningsDropdown = () => {
 
   return (
     <View style={styles.container}>
-      {earnings.map(earning => {
-        const generalAmount =
-          parseFloat(earning.generalAmount.replace(/[$,]/g, '')) || 0;
-        const amountBudgeted =
-          parseFloat(earning.amountBudgeted.replace(/[$,]/g, '')) || 0;
+      {earnings.data.map((earning: Earning, index) => {
+        // Asegúrate de convertir a números los valores
+        const amountBudgeted = parseFloat(
+          earning.amountBudgeted.replace(/[^0-9.-]+/g, ''),
+        );
+        const generalAmount = parseFloat(
+          earning.generalAmount.replace(/[^0-9.-]+/g, ''),
+        );
+
+        // Calcular el salario libre
         const freeSalary = generalAmount - amountBudgeted;
 
         return (
           <View key={earning.id} style={styles.earningItem}>
-            <TouchableOpacity style={styles.header} onPress={toggleDropdown}>
+            <TouchableOpacity
+              style={styles.header}
+              onPress={() => toggleDropdown(index)}>
               <Text style={styles.headerText}>{earning.name}</Text>
               <Icon
-                name={isOpen ? 'chevron-up' : 'chevron-down'}
+                name={openIndex === index ? 'chevron-up' : 'chevron-down'}
                 size={20}
                 color="#000"
               />
             </TouchableOpacity>
 
-            {isOpen && (
+            {openIndex === index && (
               <View style={styles.menu}>
                 <View style={styles.menuItem}>
                   <Text style={styles.menuText}>
