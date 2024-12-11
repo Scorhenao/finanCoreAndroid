@@ -113,10 +113,15 @@ export const useAuth = (): AuthContextType => {
         return true;
       } else {
         setError('Unexpected response status');
+        console.log(response.data);
+        console.log(response.status);
+        console.log(response.request);
         return false;
       }
     } catch (err: any) {
       setError(err.response?.data?.message || 'An error occurred during login');
+      console.log(err.response?.data?.message);
+
       return false;
     } finally {
       setLoading(false);
@@ -141,6 +146,8 @@ export const useAuth = (): AuthContextType => {
     email: string,
     code: string,
   ): Promise<void> => {
+    console.log(email, code);
+
     setLoading(true);
     setError(null);
 
@@ -164,14 +171,21 @@ export const useAuth = (): AuthContextType => {
   ): Promise<void> => {
     setLoading(true);
     setError(null);
+    console.log(email, code, newPassword);
 
     try {
-      await axios.post(`${BASE_URL}/auth/reset-password`, {
-        email,
+      const result = await axios.post(`${BASE_URL}/auth/reset-password`, {
         token: code,
+        email,
         newPassword,
       });
-      setSuccess(true);
+
+      if (result.status === 200) {
+        console.log(result.data);
+        setSuccess(true);
+      } else {
+        setError('Something went wrong');
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to reset password');
     } finally {

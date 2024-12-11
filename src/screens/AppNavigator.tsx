@@ -15,6 +15,7 @@ import {useNavigation} from '@react-navigation/native';
 import SeeMoreEarningScreen from './SeeMoreEarningScreen';
 import ValidateCodeScreen from './ValidateCodeScreen';
 import ForgotPasswordScreen from './ForgotPasswordScreen';
+import ResetPasswordScreen from './ResetPasswordScreen';
 
 const Stack = createStackNavigator();
 
@@ -199,6 +200,32 @@ export default function AppNavigator() {
         component={ForgotPasswordScreen}
         options={{
           headerTitle: 'Forgot Password',
+          headerStyle: AppNavigatorStyles.headerStyle,
+          headerBackground: () => (
+            <LinearGradient
+              colors={[theme.colors.backgrounds, theme.colors.texts]}
+              style={AppNavigatorStyles.gradientStyle}
+            />
+          ),
+          headerTintColor: theme.colors.texts,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{marginLeft: 16}}>
+              <Ionicons
+                name="return-down-back"
+                size={28}
+                color={theme.colors.texts}
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="ResetPasswordScreen"
+        component={ResetPasswordScreen}
+        options={{
+          headerTitle: 'Reset Password',
           headerStyle: AppNavigatorStyles.headerStyle,
           headerBackground: () => (
             <LinearGradient

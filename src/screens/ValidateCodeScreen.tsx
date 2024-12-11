@@ -31,7 +31,7 @@ const ValidateCodeScreen: React.FC<{route: any}> = ({route}) => {
     try {
       await validateRecoveryCode(email, code);
       notify('success', 'Code Validated', 'Recovery code is valid!');
-      navigation.navigate('ValidateCodeScreen', {email});
+      navigation.navigate('ResetPasswordScreen', {email, code: code});
     } catch (error: any) {
       notify('danger', 'Validation Failed', error?.message || 'Invalid code.');
     }
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   otpInput: {
     borderWidth: 1,
     borderRadius: 8,
-    fontSize: 8,
+    fontSize: 16,
     height: 50,
     width: 40,
   },
