@@ -81,10 +81,6 @@ const RegisterScreen = () => {
     }
   };
 
-  const handleRecoveryPassword = () => {
-    console.log('Navigating to recovery password screen...');
-  };
-
   return (
     <ScrollView
       style={[
@@ -235,21 +231,6 @@ const RegisterScreen = () => {
             />
           </TouchableOpacity>
         </View>
-      </View>
-
-      <View style={AuthStyles.inputGroup}>
-        <TouchableOpacity
-          onPress={handleRecoveryPassword}
-          style={AuthStyles.recoveryPasswordButton}>
-          <Icon name="key-outline" size={20} color={theme.colors.texts} />
-          <Text
-            style={[
-              AuthStyles.recoveryPasswordText,
-              {color: theme.colors.texts, borderColor: theme.colors.inputs},
-            ]}>
-            Recovery Password
-          </Text>
-        </TouchableOpacity>
       </View>
 
       {loading ? (

@@ -3,8 +3,7 @@ import axios from 'axios';
 import {FileType} from '../common/types/FileTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_URL = 'https://api-financore.onrender.com/api/auth/register';
-const LOGIN_URL = 'https://api-financore.onrender.com/api/auth/login';
+const BASE_URL = 'https://api-financore.onrender.com/api';
 
 export interface AuthContextType {
   registerUser: (
@@ -15,6 +14,13 @@ export interface AuthContextType {
     profilePicture: FileType | null,
   ) => Promise<void>;
   loginUser: (email: string, password: string) => Promise<boolean>;
+  forgotPassword: (email: string) => Promise<void>;
+  validateRecoveryCode: (email: string, code: string) => Promise<void>;
+  resetPassword: (
+    email: string,
+    code: string,
+    newPassword: string,
+  ) => Promise<void>;
   loading: boolean;
   error: string | null;
   success: boolean;
@@ -27,17 +33,15 @@ export const useAuth = (): AuthContextType => {
   const [success, setSuccess] = useState(false);
   const [token, setToken] = useState<string | null>(null);
 
-  // Recuperar el token de AsyncStorage al cargar el componente
   useEffect(() => {
     const loadToken = async () => {
       try {
         const storedToken = await AsyncStorage.getItem('token');
         if (storedToken) {
           setToken(storedToken);
-          console.log('Token cargado desde AsyncStorage:', storedToken);
         }
-      } catch (error) {
-        console.error('Error al cargar el token de AsyncStorage:', error);
+      } catch (err: any) {
+        console.error('error loading token', err);
       }
     };
 
@@ -62,28 +66,25 @@ export const useAuth = (): AuthContextType => {
     formData.append('phone', phone);
 
     if (profilePicture) {
-      console.log('File to be sent:', profilePicture);
       formData.append('file', {
         uri: profilePicture.uri,
         type: profilePicture.type,
         name: profilePicture.name,
       });
-    } else {
-      console.log('No file selected');
     }
 
     try {
-      const response = await axios.post(API_URL, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      const response = await axios.post(`${BASE_URL}/auth/register`, formData, {
+        headers: {'Content-Type': 'multipart/form-data'},
       });
 
       if (response.status === 201) {
         setSuccess(true);
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'An error occurred');
+      setError(
+        err.response?.data?.message || 'An error occurred during registration',
+      );
     } finally {
       setLoading(false);
     }
@@ -99,31 +100,80 @@ export const useAuth = (): AuthContextType => {
 
     try {
       const response = await axios.post(
-        LOGIN_URL,
+        `${BASE_URL}/auth/login`,
         {email, password},
         {headers: {'Content-Type': 'application/json'}},
       );
 
       if (response.status === 200 || response.status === 201) {
         const {accessToken} = response.data;
-        if (accessToken) {
-          setSuccess(true);
-          setToken(accessToken);
-          console.log('Token received:', accessToken);
-
-          await AsyncStorage.setItem('token', accessToken);
-          return true;
-        } else {
-          setError('No access token received');
-          return false;
-        }
+        setToken(accessToken);
+        await AsyncStorage.setItem('token', accessToken);
+        setSuccess(true);
+        return true;
       } else {
         setError('Unexpected response status');
         return false;
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'An error occurred');
+      setError(err.response?.data?.message || 'An error occurred during login');
       return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const forgotPassword = async (email: string): Promise<void> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      await axios.post(`${BASE_URL}/auth/forgot-password`, {email});
+      setSuccess(true);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to send recovery code');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const validateRecoveryCode = async (
+    email: string,
+    code: string,
+  ): Promise<void> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      await axios.post(`${BASE_URL}/auth/validate-recovery-code`, {
+        email,
+        token: code,
+      });
+      setSuccess(true);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Invalid recovery code');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetPassword = async (
+    email: string,
+    code: string,
+    newPassword: string,
+  ): Promise<void> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      await axios.post(`${BASE_URL}/auth/reset-password`, {
+        email,
+        token: code,
+        newPassword,
+      });
+      setSuccess(true);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to reset password');
     } finally {
       setLoading(false);
     }
@@ -132,6 +182,9 @@ export const useAuth = (): AuthContextType => {
   return {
     registerUser,
     loginUser,
+    forgotPassword,
+    validateRecoveryCode,
+    resetPassword,
     loading,
     error,
     success,

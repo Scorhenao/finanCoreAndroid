@@ -13,6 +13,8 @@ import DarkModeToggle from '../components/ToggleTheme';
 import {useTheme} from '../context/ThemeContext';
 import {useNavigation} from '@react-navigation/native';
 import SeeMoreEarningScreen from './SeeMoreEarningScreen';
+import ValidateCodeScreen from './ValidateCodeScreen';
+import ForgotPasswordScreen from './ForgotPasswordScreen';
 
 const Stack = createStackNavigator();
 
@@ -22,7 +24,7 @@ export default function AppNavigator() {
   const navigation = useNavigation();
 
   return (
-    <Stack.Navigator initialRouteName={token ? 'HomeScreen' : 'LoginScreen'}>
+    <Stack.Navigator initialRouteName={token ? 'HomeScreen' : 'RegisterScreen'}>
       <Stack.Screen
         name="HomeScreen"
         component={HomeScreen}
@@ -149,9 +151,8 @@ export default function AppNavigator() {
             <TouchableOpacity
               onPress={() => navigation.navigate('HomeScreen')}
               style={{marginLeft: 16}}>
-              {/* Usa un ícono diferente */}
               <Ionicons
-                name="chevron-back-outline"
+                name="return-down-back"
                 size={28}
                 color={theme.colors.texts}
               />
@@ -165,6 +166,58 @@ export default function AppNavigator() {
             />
           ),
           headerTintColor: theme.colors.texts,
+        }}
+      />
+      <Stack.Screen
+        name="ValidateCodeScreen"
+        component={ValidateCodeScreen}
+        options={{
+          headerTitle: 'Validate Code',
+          headerStyle: AppNavigatorStyles.headerStyle,
+          headerBackground: () => (
+            <LinearGradient
+              colors={[theme.colors.backgrounds, theme.colors.texts]}
+              style={AppNavigatorStyles.gradientStyle}
+            />
+          ),
+          headerTintColor: theme.colors.texts,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{marginLeft: 16}}>
+              <Ionicons
+                name="return-down-back"
+                size={28}
+                color={theme.colors.texts}
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="ForgotPasswordScreen"
+        component={ForgotPasswordScreen}
+        options={{
+          headerTitle: 'Forgot Password',
+          headerStyle: AppNavigatorStyles.headerStyle,
+          headerBackground: () => (
+            <LinearGradient
+              colors={[theme.colors.backgrounds, theme.colors.texts]}
+              style={AppNavigatorStyles.gradientStyle}
+            />
+          ),
+          headerTintColor: theme.colors.texts,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{marginLeft: 16}}>
+              <Ionicons
+                name="return-down-back"
+                size={28}
+                color={theme.colors.texts}
+              />
+            </TouchableOpacity>
+          ),
         }}
       />
     </Stack.Navigator>

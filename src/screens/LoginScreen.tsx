@@ -16,7 +16,7 @@ import Loading from '../components/loading';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../common/types/Navigation-types';
 import {useNavigation} from '@react-navigation/native';
-import { notify } from '../components/NotificationManager';
+import {notify} from '../components/NotificationManager';
 
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -59,6 +59,9 @@ const LoginScreen = () => {
     }
   };
 
+  const handleRecoveryPassword = () => {
+    navigation.navigate('ForgotPasswordScreen');
+  };
   return (
     <ScrollView
       style={[
@@ -90,7 +93,6 @@ const LoginScreen = () => {
           />
         </View>
       </View>
-      {/* Password Input */}
       <View style={AuthStyles.inputGroup}>
         <Text style={[AuthStyles.label, {color: theme.colors.texts}]}>
           Password:
@@ -133,6 +135,21 @@ const LoginScreen = () => {
           Remember Password
         </Text>
       </View>
+      <View style={AuthStyles.inputGroup}>
+        <TouchableOpacity
+          onPress={handleRecoveryPassword}
+          style={AuthStyles.recoveryPasswordButton}>
+          <Icon name="key-outline" size={20} color={theme.colors.texts} />
+          <Text
+            style={[
+              AuthStyles.recoveryPasswordText,
+              {color: theme.colors.texts, borderColor: theme.colors.inputs},
+            ]}>
+            Recovery Password
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       <Button
         title="Login"
         onPress={handleSubmit}

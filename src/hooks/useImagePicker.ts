@@ -4,11 +4,8 @@ import {FileType} from '../common/types/FileTypes';
 
 export const useImagePicker = () => {
   const [imageUri, setImageUri] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<FileType | null>(null);
 
-  console.log('Selected file:', imageFile);
-
-  const handleImageSelect = async () => {
+  const handleImageSelect = async (): Promise<FileType | null> => {
     const result = await launchImageLibrary({
       mediaType: 'photo',
       includeBase64: false,
@@ -16,16 +13,19 @@ export const useImagePicker = () => {
 
     if (result.assets && result.assets.length > 0) {
       const file = result.assets[0];
+      const newFile = {
+        uri: file.uri || '',
+        type: file.type || 'image/jpeg',
+        name: file.fileName || 'photo.jpg',
+      };
       setImageUri(file.uri || null);
-      setImageFile({
-        uri: file.uri,
-        type: file.type,
-        name: file.fileName,
-      });
+      return newFile;
     }
+
+    return null;
   };
 
-  const handleTakePhoto = async () => {
+  const handleTakePhoto = async (): Promise<FileType | null> => {
     const result = await launchCamera({
       mediaType: 'photo',
       includeBase64: false,
@@ -33,14 +33,17 @@ export const useImagePicker = () => {
 
     if (result.assets && result.assets.length > 0) {
       const file = result.assets[0];
+      const newFile = {
+        uri: file.uri || '',
+        type: file.type || 'image/jpeg',
+        name: file.fileName || 'photo.jpg',
+      };
       setImageUri(file.uri || null);
-      setImageFile({
-        uri: file.uri,
-        type: file.type,
-        name: file.fileName,
-      });
+      return newFile;
     }
+
+    return null;
   };
 
-  return {imageUri, imageFile, handleImageSelect, handleTakePhoto};
+  return {imageUri, handleImageSelect, handleTakePhoto};
 };

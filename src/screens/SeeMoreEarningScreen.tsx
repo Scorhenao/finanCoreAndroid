@@ -5,6 +5,7 @@ import {RootStackParamList} from '../common/types/Navigation-types';
 import {useRoute} from '@react-navigation/native';
 import {useTheme} from '../context/ThemeContext';
 import {parseDate} from '../common/utils/parseDate';
+import withPullToRefresh from '../components/WithPullRefresh';
 
 type SeeMoreEarningRouteProp = RouteProp<
   RootStackParamList,

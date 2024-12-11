@@ -4,6 +4,7 @@ import AppNavigator from './src/screens/AppNavigator';
 import {ThemeProvider} from './src/context/ThemeContext';
 import {AuthProvider} from './src/context/AuthContext';
 import NotificationManager from './src/components/NotificationManager';
+import withPullToRefresh from './src/components/WithPullRefresh';
 
 function App(): JSX.Element {
   return (
@@ -18,4 +19,4 @@ function App(): JSX.Element {
   );
 }
 
-export default App;
+export default withPullToRefresh(App);

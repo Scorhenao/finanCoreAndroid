@@ -10,8 +10,7 @@ export const CircleImage = ({
 }: {
   onFileSelected: (file: FileType | null) => void;
 }) => {
-  const {imageUri, imageFile, handleImageSelect, handleTakePhoto} =
-    useImagePicker();
+  const {imageUri, handleImageSelect, handleTakePhoto} = useImagePicker();
   const {darkMode} = useTheme();
 
   const handleIconPress = () => {
@@ -19,15 +18,15 @@ export const CircleImage = ({
       {
         text: 'Camera',
         onPress: async () => {
-          await handleTakePhoto();
-          onFileSelected(imageFile);
+          const file = await handleTakePhoto();
+          onFileSelected(file); // Usar el archivo directamente
         },
       },
       {
         text: 'Gallery',
         onPress: async () => {
-          await handleImageSelect();
-          onFileSelected(imageFile);
+          const file = await handleImageSelect();
+          onFileSelected(file); // Usar el archivo directamente
         },
       },
       {
