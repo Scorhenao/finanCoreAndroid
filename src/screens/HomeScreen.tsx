@@ -3,10 +3,9 @@ import {ScrollView, StyleSheet} from 'react-native';
 import StackedAreaChartComponent from '../components/StackedAreaChartComponent';
 import EarningsDropdown from '../components/EarningsDropdown';
 import {useTheme} from '../context/ThemeContext';
-import withPullToRefresh from '../components/WithPullRefresh';
 import {RefreshControl} from 'react-native-gesture-handler';
 
-const HomeScreen = ({onRefresh}) => {
+const HomeScreen = ({onRefresh}: {onRefresh: () => void}) => {
   const {theme} = useTheme();
 
   const data = [
@@ -23,10 +22,7 @@ const HomeScreen = ({onRefresh}) => {
       contentContainerStyle={[
         styles.container,
         {backgroundColor: theme.colors.backgrounds},
-      ]}
-      refreshControl={
-        <RefreshControl  refreshing={false} onRefresh={onRefresh} />
-      }>
+      ]}>
       <StackedAreaChartComponent data={data} keys={keys} colors={colors} />
       <EarningsDropdown />
     </ScrollView>
@@ -42,4 +38,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withPullToRefresh(HomeScreen);
+export default HomeScreen;
