@@ -2,8 +2,7 @@ import {useState, useEffect} from 'react';
 import axios from 'axios';
 import {FileType} from '../common/types/FileTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const BASE_URL = 'https://api-financore.onrender.com/api';
+import {Urls} from '../common/utils/urls';
 
 export interface AuthContextType {
   registerUser: (
@@ -74,9 +73,13 @@ export const useAuth = (): AuthContextType => {
     }
 
     try {
-      const response = await axios.post(`${BASE_URL}/auth/register`, formData, {
-        headers: {'Content-Type': 'multipart/form-data'},
-      });
+      const response = await axios.post(
+        `${Urls.BASE_URL}/auth/register`,
+        formData,
+        {
+          headers: {'Content-Type': 'multipart/form-data'},
+        },
+      );
 
       if (response.status === 201) {
         setSuccess(true);
@@ -100,7 +103,7 @@ export const useAuth = (): AuthContextType => {
 
     try {
       const response = await axios.post(
-        `${BASE_URL}/auth/login`,
+        `${Urls.BASE_URL}/auth/login`,
         {email, password},
         {headers: {'Content-Type': 'application/json'}},
       );
@@ -133,7 +136,7 @@ export const useAuth = (): AuthContextType => {
     setError(null);
 
     try {
-      await axios.post(`${BASE_URL}/auth/forgot-password`, {email});
+      await axios.post(`${Urls.BASE_URL}/auth/forgot-password`, {email});
       setSuccess(true);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to send recovery code');
@@ -152,7 +155,7 @@ export const useAuth = (): AuthContextType => {
     setError(null);
 
     try {
-      await axios.post(`${BASE_URL}/auth/validate-recovery-code`, {
+      await axios.post(`${Urls.BASE_URL}/auth/validate-recovery-code`, {
         email,
         token: code,
       });
@@ -174,7 +177,7 @@ export const useAuth = (): AuthContextType => {
     console.log(email, code, newPassword);
 
     try {
-      const result = await axios.post(`${BASE_URL}/auth/reset-password`, {
+      const result = await axios.post(`${Urls.BASE_URL}/auth/reset-password`, {
         token: code,
         email,
         newPassword,

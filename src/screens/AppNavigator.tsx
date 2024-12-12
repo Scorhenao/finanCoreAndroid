@@ -16,6 +16,7 @@ import SeeMoreEarningScreen from './SeeMoreEarningScreen';
 import ValidateCodeScreen from './ValidateCodeScreen';
 import ForgotPasswordScreen from './ForgotPasswordScreen';
 import ResetPasswordScreen from './ResetPasswordScreen';
+import EditEarningScreen from './EditEarningScreen';
 
 const Stack = createStackNavigator();
 
@@ -226,6 +227,32 @@ export default function AppNavigator() {
         component={ResetPasswordScreen}
         options={{
           headerTitle: 'Reset Password',
+          headerStyle: AppNavigatorStyles.headerStyle,
+          headerBackground: () => (
+            <LinearGradient
+              colors={[theme.colors.texts, theme.colors.backgrounds]}
+              style={AppNavigatorStyles.gradientStyle}
+            />
+          ),
+          headerTintColor: theme.colors.texts,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{marginLeft: 16}}>
+              <Ionicons
+                name="return-down-back"
+                size={28}
+                color={theme.colors.texts}
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="EditEarningScreen"
+        component={EditEarningScreen}
+        options={{
+          headerTitle: 'Edit Earning',
           headerStyle: AppNavigatorStyles.headerStyle,
           headerBackground: () => (
             <LinearGradient

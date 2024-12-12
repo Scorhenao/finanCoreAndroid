@@ -1,8 +1,7 @@
 import {useState, useEffect, useCallback} from 'react';
 import axios from 'axios';
 import {useAuthContext} from '../context/AuthContext';
-
-const EARNINGS_URL = 'https://api-financore.onrender.com/api/earnings';
+import {Urls} from '../common/utils/urls';
 
 export const useEarnings = () => {
   const {token} = useAuthContext();
@@ -21,7 +20,7 @@ export const useEarnings = () => {
     setError(null);
 
     try {
-      const response = await axios.get(EARNINGS_URL, {
+      const response = await axios.get(`${Urls.BASE_URL}/earnings`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
