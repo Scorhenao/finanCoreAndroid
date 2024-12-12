@@ -35,9 +35,14 @@ const Wallet: React.FC<WalletProps> = ({data}) => {
         <View
           style={[
             styles.wallet,
+            {backgroundColor: theme.colors.buttons},
             isOpen ? styles.walletOpen : styles.walletClosed,
           ]}>
-          <View style={styles.walletOpening}>
+          <View
+            style={
+              (styles.walletOpening,
+              {backgroundColor: theme.colors.backgrounds})
+            }>
             <Text style={[styles.walletText, {color: theme.colors.texts}]}>
               {isOpen
                 ? 'Total available: ' + totalAvailable.toLocaleString()
@@ -45,9 +50,6 @@ const Wallet: React.FC<WalletProps> = ({data}) => {
             </Text>
             {isOpen && (
               <>
-                <Text style={[styles.walletText, {color: theme.colors.texts}]}>
-                  Total available: ${totalAvailable.toLocaleString()}
-                </Text>
                 <Text style={[styles.walletText, {color: theme.colors.texts}]}>
                   Total budgeted: ${totalBudgeted.toLocaleString()}
                 </Text>
@@ -68,8 +70,6 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   wallet: {
-    backgroundColor: '#D69F7E',
-    shadowColor: '#000',
     shadowOffset: {width: 0, height: 4},
     shadowOpacity: 0.5,
     shadowRadius: 8,
@@ -91,12 +91,10 @@ const styles = StyleSheet.create({
   walletOpening: {
     width: '100%',
     height: '80%',
-    backgroundColor: '#f9e8d9',
-    borderRadius: 15,
+    borderRadius: 25,
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.3,
     shadowRadius: 5,
@@ -106,7 +104,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginVertical: 5,
-    textShadowColor: '#fff',
     textShadowOffset: {width: 1, height: 1},
     textShadowRadius: 5,
   },

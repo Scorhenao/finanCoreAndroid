@@ -16,15 +16,8 @@ const StackedAreaChartComponent: React.FC<StackedAreaChartProps> = ({
 }) => {
   console.log('Chart Data:', data);
 
-  const hasZeroBudgeted = data.some(item => item.budgeted === 0);
-
   return (
-    <View style={{width: '100%', height: 250}}>
-      {hasZeroBudgeted && (
-        <Text style={{textAlign: 'center', color: 'gray', marginBottom: 10}}>
-          Budgeted amount is zero
-        </Text>
-      )}
+    <View style={{width: '100%', height: 250, borderRadius: 10}}>
       <StackedAreaChart
         style={{flex: 1}}
         data={data}
