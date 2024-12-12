@@ -42,7 +42,7 @@ export default function AppNavigator() {
           headerStyle: AppNavigatorStyles.headerStyle,
           headerBackground: () => (
             <LinearGradient
-              colors={[theme.colors.backgrounds, theme.colors.texts]}
+              colors={[theme.colors.texts, theme.colors.backgrounds]}
               style={AppNavigatorStyles.gradientStyle}
             />
           ),
@@ -97,7 +97,7 @@ export default function AppNavigator() {
           headerStyle: AppNavigatorStyles.headerStyle,
           headerBackground: () => (
             <LinearGradient
-              colors={[theme.colors.backgrounds, theme.colors.texts]}
+              colors={[theme.colors.texts, theme.colors.backgrounds]}
               style={AppNavigatorStyles.gradientStyle}
             />
           ),
@@ -136,7 +136,7 @@ export default function AppNavigator() {
           headerStyle: AppNavigatorStyles.headerStyle,
           headerBackground: () => (
             <LinearGradient
-              colors={[theme.colors.backgrounds, theme.colors.texts]}
+              colors={[theme.colors.texts, theme.colors.backgrounds]}
               style={AppNavigatorStyles.gradientStyle}
             />
           ),
@@ -162,7 +162,7 @@ export default function AppNavigator() {
           headerStyle: AppNavigatorStyles.headerStyle,
           headerBackground: () => (
             <LinearGradient
-              colors={[theme.colors.backgrounds, theme.colors.texts]}
+              colors={[theme.colors.texts, theme.colors.backgrounds]}
               style={AppNavigatorStyles.gradientStyle}
             />
           ),
@@ -177,7 +177,7 @@ export default function AppNavigator() {
           headerStyle: AppNavigatorStyles.headerStyle,
           headerBackground: () => (
             <LinearGradient
-              colors={[theme.colors.backgrounds, theme.colors.texts]}
+              colors={[theme.colors.texts, theme.colors.backgrounds]}
               style={AppNavigatorStyles.gradientStyle}
             />
           ),
@@ -203,7 +203,7 @@ export default function AppNavigator() {
           headerStyle: AppNavigatorStyles.headerStyle,
           headerBackground: () => (
             <LinearGradient
-              colors={[theme.colors.backgrounds, theme.colors.texts]}
+              colors={[theme.colors.texts, theme.colors.backgrounds]}
               style={AppNavigatorStyles.gradientStyle}
             />
           ),
@@ -229,7 +229,7 @@ export default function AppNavigator() {
           headerStyle: AppNavigatorStyles.headerStyle,
           headerBackground: () => (
             <LinearGradient
-              colors={[theme.colors.backgrounds, theme.colors.texts]}
+              colors={[theme.colors.texts, theme.colors.backgrounds]}
               style={AppNavigatorStyles.gradientStyle}
             />
           ),

@@ -23,9 +23,6 @@ export const AppNavigatorStyles = StyleSheet.create({
   gradientStyle: {
     flex: 1,
     height: '100%',
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 100,
-    transform: [{rotate: '-10deg'}, {scaleX: 1.8}, {scaleY: 1.6}],
   },
   headerStyle: {
     backgroundColor: 'transparent',
