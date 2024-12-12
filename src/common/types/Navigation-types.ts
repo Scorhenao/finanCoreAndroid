@@ -8,6 +8,7 @@ export type RootStackParamList = {
   ForgotPasswordScreen: undefined;
   ResetPasswordScreen: undefined;
   ValidateCodeScreen: undefined;
+  AddEarningsScreen: undefined;
   EditEarningScreen: {earning: Earning};
   DeleteEarningScreen: undefined;
 };

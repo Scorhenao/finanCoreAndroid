@@ -1,40 +1,101 @@
-import React from 'react';
-import {ScrollView, StyleSheet} from 'react-native';
+import React, {useEffect} from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Text,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import StackedAreaChartComponent from '../components/StackedAreaChartComponent';
 import EarningsDropdown from '../components/EarningsDropdown';
 import {useTheme} from '../context/ThemeContext';
-import {RefreshControl} from 'react-native-gesture-handler';
+import {useGraphics} from '../hooks/useGraphics';
+import Wallet from '../components/Wallet';
 
-const HomeScreen = ({onRefresh}: {onRefresh: () => void}) => {
+const HomeScreen = ({navigation}: any) => {
   const {theme} = useTheme();
+  const {graphicsData, loading, error} = useGraphics();
 
-  const data = [
-    {month: 1, apples: 50, bananas: 30},
-    {month: 2, apples: 40, bananas: 50},
-    {month: 3, apples: 60, bananas: 70},
-  ];
+  console.log('Graphics data:', graphicsData);
 
-  const keys = ['apples', 'bananas'];
+  useEffect(() => {
+    if (error) {
+      console.error(error);
+    }
+  }, [error]);
+
+  if (loading) {
+    return (
+      <View style={[{backgroundColor: theme.colors.backgrounds}]}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={[{backgroundColor: theme.colors.backgrounds}]}>
+        <Text>Error: {error}</Text>
+      </View>
+    );
+  }
+
+  const formattedData = graphicsData.map(item => ({
+    month: item.name,
+    budgeted: parseFloat(item.percentageBudgeted) || 0,
+    available: parseFloat(item.percentageAvailable) || 0,
+  }));
+
+  const keys = ['budgeted', 'available'];
   const colors = [theme.colors.hovers, theme.colors.buttons];
 
   return (
     <ScrollView
       contentContainerStyle={[
-        styles.container,
+        styles.scrollContainer,
         {backgroundColor: theme.colors.backgrounds},
       ]}>
-      <StackedAreaChartComponent data={data} keys={keys} colors={colors} />
-      <EarningsDropdown />
+      <Wallet data={graphicsData} />
+
+      <StackedAreaChartComponent
+        data={formattedData}
+        keys={keys}
+        colors={colors}
+      />
+
+      <View style={{marginBottom: 20}}>
+        <EarningsDropdown />
+      </View>
+
+      <TouchableOpacity
+        style={[styles.addButton, {backgroundColor: theme.colors.buttons}]}
+        onPress={() => navigation.navigate('AddEarningScreen')}>
+        <Icon name="add-circle-outline" size={32} color={theme.colors.texts} />
+      </TouchableOpacity>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  scrollContainer: {
+    flexGrow: 1,
+    paddingHorizontal: 20,
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
 });
 

@@ -1,10 +1,10 @@
 import React from 'react';
-import {View} from 'react-native';
+import {View, Text} from 'react-native';
 import {StackedAreaChart, Grid} from 'react-native-svg-charts';
 import * as shape from 'd3-shape';
 
 interface StackedAreaChartProps {
-  data: {month: number; apples: number; bananas: number}[];
+  data: {month: string; [key: string]: number}[];
   keys: readonly string[];
   colors: string[];
 }
@@ -14,10 +14,19 @@ const StackedAreaChartComponent: React.FC<StackedAreaChartProps> = ({
   keys,
   colors,
 }) => {
+  console.log('Chart Data:', data);
+
+  const hasZeroBudgeted = data.some(item => item.budgeted === 0);
+
   return (
-    <View style={{width: '90%'}}>
+    <View style={{width: '100%', height: 250}}>
+      {hasZeroBudgeted && (
+        <Text style={{textAlign: 'center', color: 'gray', marginBottom: 10}}>
+          Budgeted amount is zero
+        </Text>
+      )}
       <StackedAreaChart
-        style={{height: 200}}
+        style={{flex: 1}}
         data={data}
         keys={keys}
         colors={colors}
