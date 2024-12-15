@@ -12,6 +12,7 @@ import EarningsDropdown from '../components/EarningsDropdown';
 import {useTheme} from '../context/ThemeContext';
 import {useGraphics} from '../hooks/useGraphics';
 import Wallet from '../components/Wallet';
+import Loading from '../components/loading';
 
 const HomeScreen = ({navigation}: any) => {
   const {theme} = useTheme();
@@ -26,11 +27,7 @@ const HomeScreen = ({navigation}: any) => {
   }, [error]);
 
   if (loading) {
-    return (
-      <View style={[{backgroundColor: theme.colors.backgrounds}]}>
-        <Text>Loading...</Text>
-      </View>
-    );
+    return <Loading />;
   }
 
   if (error) {
