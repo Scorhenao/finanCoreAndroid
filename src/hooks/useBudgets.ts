@@ -42,6 +42,7 @@ export const useBudgets = () => {
   const [createdBudget, setCreatedBudget] = useState<BudgetResponse | null>(
     null,
   );
+  const [budgets, setBudgets] = useState<BudgetResponse[] | null>(null);
 
   const createBudget = useCallback(
     async (budget: Budget) => {
@@ -81,11 +82,45 @@ export const useBudgets = () => {
     [token],
   );
 
+  const getBudgets = useCallback(async () => {
+    if (!token) {
+      setError('No token provided');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.get(`${Urls.BASE_URL}/budgets`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        setBudgets(response.data.data);
+      } else {
+        setError('Unexpected response status');
+      }
+    } catch (err: any) {
+      console.error(
+        'Error fetching budgets:',
+        err.response?.data || err.message,
+      );
+      setError(err.response?.data?.message || 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
   return {
     loading,
     error,
     successMessage,
     createdBudget,
+    budgets,
     createBudget,
+    getBudgets,
   };
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   ScrollView,
   Text,
@@ -21,78 +21,100 @@ const BudgetsScreen = () => {
   const route = useRoute<BudgetScreenRouteProp>();
   const {earningId, earningName} = route.params;
   const navigation = useNavigation();
-  const {deleteBudget, loading, error} = useBudgets();
+  const {loading, error, budgets, getBudgets} = useBudgets(); // Added getBudgets
 
-  const handleDeleteBudget = async () => {
-    try {
-      await deleteBudget(budget.id);
-      notify('success', 'Budget deleted successfully', '');
-      navigation.goBack();
-    } catch (err: any) {
-      notify('danger', 'Error deleting budget', err.message);
-    }
-  };
+  // Fetch budgets when the component mounts
+  useEffect(() => {
+    getBudgets(); // Fetch all budgets
+  }, [getBudgets]);
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>{error}</Text>;
+  }
 
   return (
     <ScrollView
       style={[styles.container, {backgroundColor: theme.colors.backgrounds}]}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.iconButton}
-          onPress={() => navigation.navigate('EditBudgetScreen', {budget})}>
-          <Icon name="create-outline" size={24} color={theme.colors.buttons} />
-        </TouchableOpacity>
+      {budgets && budgets.length > 0 ? (
+        budgets.map(budget => (
+          <View key={budget.id} style={styles.detailsContainer}>
+            <Text style={[styles.title, {color: theme.colors.texts}]}>
+              Budget of {budget.name}
+            </Text>
+            <Text style={[styles.label, {color: theme.colors.texts}]}>
+              Description:
+            </Text>
+            <Text style={[styles.text, {color: theme.colors.texts}]}>
+              {budget.description}
+            </Text>
 
-        <TouchableOpacity
-          style={styles.iconButton}
-          onPress={handleDeleteBudget}>
-          <Icon name="trash-outline" size={24} color={theme.colors.buttons} />
-        </TouchableOpacity>
+            <Text style={[styles.label, {color: theme.colors.texts}]}>
+              Budget Amount:
+            </Text>
+            <Text style={[styles.text, {color: theme.colors.texts}]}>
+              {budget.amount} COP
+            </Text>
 
-        <TouchableOpacity style={styles.iconButton}>
-          <Icon
-            name="calendar-outline"
-            size={24}
-            color={theme.colors.buttons}
-          />
-        </TouchableOpacity>
-      </View>
+            <Text style={[styles.label, {color: theme.colors.texts}]}>
+              Category:
+            </Text>
+            <View
+              style={[
+                styles.categoryContainer,
+                {borderColor: theme.colors.texts},
+              ]}>
+              <Text style={[styles.text, {color: theme.colors.texts}]}>
+                {budget.category.name}
+              </Text>
+            </View>
 
-      <View style={styles.detailsContainer}>
-        <Text style={[styles.title, {color: theme.colors.texts}]}>
-          Budget of {budget.name}
-        </Text>
-        <Text style={[styles.label, {color: theme.colors.texts}]}>
-          Description:
-        </Text>
-        <Text style={[styles.text, {color: theme.colors.texts}]}>
-          {budget.description}
-        </Text>
+            <Text style={[styles.label, {color: theme.colors.texts}]}>
+              Budget From:
+            </Text>
+            <Text style={[styles.text, {color: theme.colors.texts}]}>
+              {budget.earning.name}
+            </Text>
 
-        <Text style={[styles.label, {color: theme.colors.texts}]}>
-          Budget Amount:
-        </Text>
-        <Text style={[styles.text, {color: theme.colors.texts}]}>
-          {budget.amount} COP
-        </Text>
+            <View style={styles.header}>
+              <TouchableOpacity
+                style={styles.iconButton}
+                onPress={() =>
+                  navigation.navigate('EditBudgetScreen', {budget})
+                }>
+                <Icon
+                  name="create-outline"
+                  size={24}
+                  color={theme.colors.buttons}
+                />
+              </TouchableOpacity>
 
-        <Text style={[styles.label, {color: theme.colors.texts}]}>
-          Category:
-        </Text>
-        <View
-          style={[styles.categoryContainer, {borderColor: theme.colors.texts}]}>
-          <Text style={[styles.text, {color: theme.colors.texts}]}>
-            {budget.categoryName}
-          </Text>
-        </View>
+              <TouchableOpacity
+                style={styles.iconButton}
+                onPress={() => handleDeleteBudget(budget.id)}>
+                <Icon
+                  name="trash-outline"
+                  size={24}
+                  color={theme.colors.buttons}
+                />
+              </TouchableOpacity>
 
-        <Text style={[styles.label, {color: theme.colors.texts}]}>
-          Budget From:
-        </Text>
-        <Text style={[styles.text, {color: theme.colors.texts}]}>
-          {budget.earningName}
-        </Text>
-      </View>
+              <TouchableOpacity style={styles.iconButton}>
+                <Icon
+                  name="calendar-outline"
+                  size={24}
+                  color={theme.colors.buttons}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        ))
+      ) : (
+        <Text style={{color: theme.colors.texts}}>No budgets found</Text>
+      )}
     </ScrollView>
   );
 };
