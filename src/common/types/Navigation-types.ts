@@ -1,3 +1,4 @@
+import {BudgetResponse} from '../interfaces/budgetResponse.interface';
 import {Earning} from '../interfaces/earning.interface';
 
 export type RootStackParamList = {
@@ -18,4 +19,5 @@ export type RootStackParamList = {
   };
   CategoriesScreen: undefined;
   BudgetsScreen: {earningId: String; earningName: String};
+  EditBudgetScreen: {budget: BudgetResponse};
 };

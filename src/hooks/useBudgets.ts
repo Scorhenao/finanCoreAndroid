@@ -2,8 +2,10 @@ import {useState, useCallback} from 'react';
 import axios from 'axios';
 import {useAuthContext} from '../context/AuthContext';
 import {Urls} from '../common/utils/urls';
+import {BudgetResponse} from '../common/interfaces/budgetResponse.interface';
 
 interface Budget {
+  id: string;
   name: string;
   description: string;
   amount: number;
@@ -11,27 +13,6 @@ interface Budget {
   endDate: string;
   categoryId: string;
   earningId: string;
-}
-
-interface BudgetResponse {
-  id: string;
-  name: string;
-  description: string;
-  amount: number;
-  startDate: string;
-  endDate: string;
-  category: {
-    id: string;
-    name: string;
-  };
-  earning: {
-    id: string;
-    name: string;
-  };
-  user: {
-    id: string;
-    name: string;
-  };
 }
 
 export const useBudgets = () => {
@@ -45,7 +26,7 @@ export const useBudgets = () => {
   const [budgets, setBudgets] = useState<BudgetResponse[] | null>(null);
 
   const createBudget = useCallback(
-    async (budget: Budget) => {
+    async (budget: Omit<Budget, 'id'>) => {
       if (!token) {
         setError('No token provided');
         return;
@@ -114,7 +95,6 @@ export const useBudgets = () => {
     }
   }, [token]);
 
-  // DELETE budget
   const deleteBudget = useCallback(
     async (id: string) => {
       if (!token) {
@@ -135,7 +115,6 @@ export const useBudgets = () => {
 
         if (response.status === 204) {
           setSuccessMessage('Budget deleted successfully');
-          // Optionally, remove the deleted budget from the local state
           setBudgets(prev => prev?.filter(budget => budget.id !== id) || null);
         } else {
           setError('Unexpected response status');
@@ -143,6 +122,49 @@ export const useBudgets = () => {
       } catch (err: any) {
         console.error(
           'Error deleting budget:',
+          err.response?.data || err.message,
+        );
+        setError(err.response?.data?.message || 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [token],
+  );
+
+  const updateBudget = useCallback(
+    async (budget: Budget) => {
+      if (!token) {
+        setError('No token provided');
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+      setSuccessMessage(null);
+
+      try {
+        const response = await axios.patch(`${Urls.BASE_URL}/budgets`, budget, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 200) {
+          setSuccessMessage('Budget updated successfully');
+          // Optionally update the local state with the updated budget
+          setBudgets(
+            prev =>
+              prev?.map(b => (b.id === budget.id ? {...b, ...budget} : b)) ||
+              null,
+          );
+        } else {
+          setError('Unexpected response status');
+        }
+      } catch (err: any) {
+        console.error(
+          'Error updating budget:',
           err.response?.data || err.message,
         );
         setError(err.response?.data?.message || 'An error occurred');
@@ -162,5 +184,6 @@ export const useBudgets = () => {
     createBudget,
     getBudgets,
     deleteBudget,
+    updateBudget,
   };
 };

@@ -22,6 +22,7 @@ import AddBudgetScreen from './AddBudgetScreen';
 import CategoriesScreen from './CategoriesScreen';
 import BudgetsScreen from './BudgetsScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import EditBudgetScreen from './EditBudgetScreen';
 
 const Stack = createStackNavigator();
 
@@ -381,6 +382,32 @@ export default function AppNavigator() {
         component={BudgetsScreen}
         options={{
           headerTitle: 'Budgets',
+          headerStyle: AppNavigatorStyles.headerStyle,
+          headerBackground: () => (
+            <LinearGradient
+              colors={[theme.colors.texts, theme.colors.backgrounds]}
+              style={AppNavigatorStyles.gradientStyle}
+            />
+          ),
+          headerTintColor: theme.colors.texts,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{marginLeft: 16}}>
+              <Ionicons
+                name="return-down-back"
+                size={28}
+                color={theme.colors.texts}
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="EditBudgetScreen"
+        component={EditBudgetScreen}
+        options={{
+          headerTitle: 'Edit Budget',
           headerStyle: AppNavigatorStyles.headerStyle,
           headerBackground: () => (
             <LinearGradient

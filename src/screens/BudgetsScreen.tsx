@@ -29,7 +29,6 @@ const BudgetsScreen = () => {
     getBudgets();
   }, [getBudgets]);
 
-  // Maneja el caso cuando budgets es null o undefined
   const filteredBudgets =
     budgets?.filter(budget => budget.earning.name === earningName) || [];
 
