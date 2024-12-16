@@ -29,7 +29,6 @@ const BudgetsScreen = () => {
   const earningName = route.params.earningName;
   const {loading, error, budgets, getBudgets, deleteBudget} = useBudgets();
 
-  // Actualiza budgets al volver a la pantalla
   useFocusEffect(
     useCallback(() => {
       getBudgets();
@@ -96,7 +95,7 @@ const BudgetsScreen = () => {
                 styles.categoryContainer,
                 {borderColor: theme.colors.texts},
               ]}>
-              <Text style={[styles.text, {color: theme.colors.texts}]}>
+              <Text style={[{color: theme.colors.texts}]}>
                 {budget.category.name}
               </Text>
             </View>
@@ -107,6 +106,35 @@ const BudgetsScreen = () => {
             <Text style={[styles.text, {color: theme.colors.texts}]}>
               {budget.earning.name}
             </Text>
+            <Text style={[styles.label, {color: theme.colors.texts}]}>
+              Start Date:
+            </Text>
+            <View style={styles.dateContainer}>
+              <Icon
+                name="calendar-outline"
+                size={20}
+                color={theme.colors.buttons}
+                style={styles.icon}
+              />
+              <Text style={[styles.text, {color: theme.colors.texts}]}>
+                {budget.startDate}
+              </Text>
+            </View>
+
+            <Text style={[styles.label, {color: theme.colors.texts}]}>
+              End Date:
+            </Text>
+            <View style={styles.dateContainer}>
+              <Icon
+                name="calendar-outline"
+                size={20}
+                color={theme.colors.buttons}
+                style={styles.icon}
+              />
+              <Text style={[styles.text, {color: theme.colors.texts}]}>
+                {budget.endDate}
+              </Text>
+            </View>
 
             <View style={styles.header}>
               <TouchableOpacity
@@ -167,6 +195,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
   },
+  dateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 10,
+    borderColor: '#ddd',
+    backgroundColor: 'rgba(0, 0, 0, 0.02)',
+  },
+  icon: {
+    marginRight: 10,
+  },
+
   label: {
     fontSize: 16,
     fontWeight: '600',
@@ -178,8 +220,9 @@ const styles = StyleSheet.create({
   },
   categoryContainer: {
     borderWidth: 1,
+    fontSize: 16,
     borderRadius: 8,
-    padding: 10,
+    padding: 8,
   },
 });
 
