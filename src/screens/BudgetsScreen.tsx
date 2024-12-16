@@ -64,12 +64,13 @@ const BudgetsScreen = () => {
     return <Text>{error}</Text>;
   }
 
-  const budgetId = budgets?.find(
-    budget => budget.earning.name === earningName,
-  )?.id;
-  const budgetName = budgets?.find(
-    budget => budget.earning.name === earningName,
-  )?.name;
+  let budgetsInfo = budgets
+    ?.filter(budget => budget.earning.name === earningName)
+    .map(budget => ({
+      budgetId: budget.id,
+      budgetName: budget.name,
+    }));
+
   return (
     <ScrollView
       style={[styles.container, {backgroundColor: theme.colors.backgrounds}]}>
@@ -159,8 +160,8 @@ const BudgetsScreen = () => {
                 style={styles.iconButton}
                 onPress={() =>
                   navigation.navigate('AddTransactionScreen', {
-                    budgetId,
-                    budgetName,
+                    budgetId: budget.id,
+                    budgetName: budget.name,
                   })
                 }>
                 <Icon name="cash" size={24} color={theme.colors.buttons} />
@@ -202,12 +203,12 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     backgroundColor: 'rgba(0, 0, 0, 0.05)',
-    elevation: 2, // Sombra para hacer el botón más visible
+    elevation: 2,
     marginHorizontal: 5,
-    transition: 'background-color 0.2s', // Transición suave para el cambio de color
+    transition: 'background-color 0.2s',
   },
   iconButtonPressed: {
-    backgroundColor: 'rgba(0, 0, 0, 0.1)', // Cambio de color cuando se presiona
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
   detailsContainer: {
     marginTop: 20,

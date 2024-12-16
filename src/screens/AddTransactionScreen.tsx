@@ -8,15 +8,18 @@ import {
 } from 'react-native';
 import {useTheme} from '../context/ThemeContext';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
 import {useTransactions} from '../hooks/useTransactions';
 import Loading from '../components/loading';
 import {notify} from '../components/NotificationManager';
+import {RootStackParamList} from '../common/types/Navigation-types';
 
 const AddTransactionScreen = () => {
   const {theme} = useTheme();
-  const route = useRoute();
+  const route =
+    useRoute<RouteProp<RootStackParamList, 'AddTransactionScreen'>>();
   const {budgetId, budgetName} = route.params;
+
   const {createTransaction, loading} = useTransactions();
   const navigation = useNavigation();
 
@@ -27,32 +30,16 @@ const AddTransactionScreen = () => {
     category: '',
   });
 
-  const handleChange = (name, value) => {
+  const handleChange = (name: string, value: string) => {
     setTransactionData({
       ...transactionData,
       [name]: value,
     });
   };
 
-  const handleDateChange = (event, selectedDate) => {
-    if (selectedDate) {
-      const currentDate = selectedDate.toISOString().split('T')[0];
-      setTransactionData({
-        ...transactionData,
-        date: currentDate,
-      });
-    }
-    setShowDatePicker(false);
-  };
-
   const handleCreateTransaction = async () => {
     if (!transactionData.description || !transactionData.amount) {
       notify('danger', 'Validation Error', 'All fields are required.');
-      return;
-    }
-
-    if (Number(transactionData.amount) <= 0) {
-      notify('danger', 'Validation Error', 'Amount must be greater than zero.');
       return;
     }
 
