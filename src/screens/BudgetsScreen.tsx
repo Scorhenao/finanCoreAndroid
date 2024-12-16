@@ -64,6 +64,12 @@ const BudgetsScreen = () => {
     return <Text>{error}</Text>;
   }
 
+  const budgetId = budgets?.find(
+    budget => budget.earning.name === earningName,
+  )?.id;
+  const budgetName = budgets?.find(
+    budget => budget.earning.name === earningName,
+  )?.name;
   return (
     <ScrollView
       style={[styles.container, {backgroundColor: theme.colors.backgrounds}]}>
@@ -151,6 +157,17 @@ const BudgetsScreen = () => {
 
               <TouchableOpacity
                 style={styles.iconButton}
+                onPress={() =>
+                  navigation.navigate('AddTransactionScreen', {
+                    budgetId,
+                    budgetName,
+                  })
+                }>
+                <Icon name="cash" size={24} color={theme.colors.buttons} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.iconButton}
                 onPress={() => handleDeleteBudget(budget.id)}>
                 <Icon
                   name="trash-outline"
@@ -182,9 +199,15 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
   },
   iconButton: {
-    padding: 10,
+    padding: 12,
     borderRadius: 8,
     backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    elevation: 2, // Sombra para hacer el botón más visible
+    marginHorizontal: 5,
+    transition: 'background-color 0.2s', // Transición suave para el cambio de color
+  },
+  iconButtonPressed: {
+    backgroundColor: 'rgba(0, 0, 0, 0.1)', // Cambio de color cuando se presiona
   },
   detailsContainer: {
     marginTop: 20,
@@ -208,7 +231,6 @@ const styles = StyleSheet.create({
   icon: {
     marginRight: 10,
   },
-
   label: {
     fontSize: 16,
     fontWeight: '600',
@@ -223,6 +245,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderRadius: 8,
     padding: 8,
+  },
+  transactionButtonContainer: {
+    marginTop: 20,
+    paddingHorizontal: 20,
+  },
+  transactionButton: {
+    backgroundColor: '#4CAF50',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  transactionButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 
