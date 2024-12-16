@@ -11,4 +11,5 @@ export type RootStackParamList = {
   AddEarningsScreen: undefined;
   EditEarningScreen: {earning: Earning};
   DeleteEarningScreen: undefined;
+  AddBudgetScreen: {earningId: String; amountAvailable: string};
 };

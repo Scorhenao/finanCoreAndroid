@@ -86,6 +86,17 @@ const EarningsDropdown = () => {
                   <Text style={styles.menuText}>See More</Text>
                   <Icon name="ellipsis-horizontal" size={20} color="#000" />
                 </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.menuItemAddBudget}
+                  onPress={() =>
+                    navigation.navigate('AddBudgetScreen', {
+                      earningId: earning.id,
+                      amountAvailable: freeSalary,
+                    })
+                  }>
+                  <Icon name="add" size={24} color="#000" />
+                  <Text style={styles.menuText}>Add Budget</Text>
+                </TouchableOpacity>
               </View>
             )}
           </View>
@@ -125,6 +136,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+  },
+  menuItemAddBudget: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   menuItemSeeMore: {
     flexDirection: 'row',
