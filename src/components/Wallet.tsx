@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {useTheme} from '../context/ThemeContext';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 interface WalletProps {
   data: {
@@ -39,10 +40,15 @@ const Wallet: React.FC<WalletProps> = ({data}) => {
             isOpen ? styles.walletOpen : styles.walletClosed,
           ]}>
           <View
-            style={
-              (styles.walletOpening,
-              {backgroundColor: theme.colors.backgrounds})
-            }>
+            style={[
+              styles.walletOpening,
+              {backgroundColor: theme.colors.backgrounds},
+            ]}>
+            <Icon
+              name={isOpen ? 'wallet' : 'wallet-outline'}
+              size={100}
+              color={theme.colors.texts}
+            />
             <Text style={[styles.walletText, {color: theme.colors.texts}]}>
               {isOpen
                 ? 'Total available: ' + totalAvailable.toLocaleString()
@@ -103,7 +109,6 @@ const styles = StyleSheet.create({
   walletText: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginVertical: 5,
     textShadowOffset: {width: 1, height: 1},
     textShadowRadius: 5,
   },
