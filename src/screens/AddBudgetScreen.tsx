@@ -10,7 +10,7 @@ import {useTheme} from '../context/ThemeContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {useBudgets} from '../hooks/useBudgets';
 import Loading from '../components/loading';
 import {AddBudgetstyles} from '../css/AddBudgetStyles';
@@ -22,6 +22,8 @@ const AddBudgetScreen = () => {
   const {earningId, amountAvailable, earningName} = route.params;
   const {createBudget, loading, error, successMessage, createdBudget} =
     useBudgets();
+  const navigation = useNavigation();
+
   const {
     categories: categoriesResponse,
     fetchCategories,
@@ -98,7 +100,6 @@ const AddBudgetScreen = () => {
       categoryId: budgetData.category,
       earningId: earningId,
     };
-    console.log(`The budget data is ${JSON.stringify(budget)}`);
 
     try {
       await createBudget(budget);
@@ -111,8 +112,27 @@ const AddBudgetScreen = () => {
         );
         navigation.navigate('HomeScreen');
       }
-    } catch (err) {
+    } catch (err: any) {
       notify('danger', 'Error', 'Failed to create budget. Please try again.');
+      if (err && err.message) {
+        if (
+          err.message.includes('The date range must be at least one month.')
+        ) {
+          notify(
+            'danger',
+            'Error',
+            'The date range must be at least one month. Please adjust the start and end dates.',
+          );
+        } else {
+          notify(
+            'danger',
+            'Error',
+            'Failed to create budget. Please try again.',
+          );
+        }
+      } else {
+        notify('danger', 'Error', 'An unexpected error occurred.');
+      }
     }
   };
 
