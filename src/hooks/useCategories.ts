@@ -71,12 +71,18 @@ export const useCategories = () => {
           },
         );
 
+        console.log('Response data:', response.data);
+
         if (response.status === 201) {
           setSuccessMessage('Category created successfully');
-          setCategories(prevCategories => [
-            ...prevCategories,
-            response.data.data,
-          ]);
+
+          setCategories(prevCategories => {
+            if (Array.isArray(prevCategories)) {
+              return [...prevCategories, response.data.data];
+            } else {
+              return [response.data.data];
+            }
+          });
         } else {
           setError('Unexpected response status');
         }

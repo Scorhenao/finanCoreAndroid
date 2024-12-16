@@ -1,4 +1,3 @@
-// Loading.js
 import React, {useEffect, useRef} from 'react';
 import {View, Text, Animated} from 'react-native';
 import {LoadingStyles} from '../css/LoadingStyles';

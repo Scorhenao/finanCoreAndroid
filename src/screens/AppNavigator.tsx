@@ -19,6 +19,7 @@ import ResetPasswordScreen from './ResetPasswordScreen';
 import EditEarningScreen from './EditEarningScreen';
 import AddEarningScreen from './AddEarningScreen';
 import AddBudgetScreen from './AddBudgetScreen';
+import CategoriesScreen from './CategoriesScreen';
 
 const Stack = createStackNavigator();
 
@@ -307,6 +308,32 @@ export default function AppNavigator() {
         component={AddBudgetScreen}
         options={{
           headerTitle: 'Add Budget',
+          headerStyle: AppNavigatorStyles.headerStyle,
+          headerBackground: () => (
+            <LinearGradient
+              colors={[theme.colors.texts, theme.colors.backgrounds]}
+              style={AppNavigatorStyles.gradientStyle}
+            />
+          ),
+          headerTintColor: theme.colors.texts,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{marginLeft: 16}}>
+              <Ionicons
+                name="return-down-back"
+                size={28}
+                color={theme.colors.texts}
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="CategoriesScreen"
+        component={CategoriesScreen}
+        options={{
+          headerTitle: 'Categories',
           headerStyle: AppNavigatorStyles.headerStyle,
           headerBackground: () => (
             <LinearGradient

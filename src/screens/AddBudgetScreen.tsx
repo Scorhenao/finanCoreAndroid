@@ -263,12 +263,24 @@ const AddBudgetScreen = () => {
       </View>
 
       {/* Modify Category and Icon */}
-      <View style={AddBudgetstyles.modifyCategory}>
-        <Text style={[AddBudgetstyles.modifyText, {color: theme.colors.texts}]}>
-          Modify Category
-        </Text>
-        <Icon name="ellipsis-horizontal" size={24} color={theme.colors.texts} />
-      </View>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('CategoriesScreen', {
+            categories: categoriesResponse.data,
+          })
+        }>
+        <View style={AddBudgetstyles.modifyCategory}>
+          <Text
+            style={[AddBudgetstyles.modifyText, {color: theme.colors.texts}]}>
+            Modify Category
+          </Text>
+          <Icon
+            name="ellipsis-horizontal"
+            size={24}
+            color={theme.colors.texts}
+          />
+        </View>
+      </TouchableOpacity>
 
       {/* Category Select */}
       <View style={AddBudgetstyles.inputGroup}>

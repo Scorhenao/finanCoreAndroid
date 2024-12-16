@@ -16,4 +16,5 @@ export type RootStackParamList = {
     amountAvailable: string;
     earningName: string;
   };
+  CategoriesScreen: undefined;
 };
