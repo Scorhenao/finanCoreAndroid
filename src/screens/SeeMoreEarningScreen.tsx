@@ -14,6 +14,7 @@ import {parseDate} from '../common/utils/parseDate';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useEarnings} from '../hooks/useEarnings';
 import {notify} from '../components/NotificationManager';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 type SeeMoreEarningRouteProp = RouteProp<
   RootStackParamList,
@@ -23,9 +24,12 @@ type SeeMoreEarningRouteProp = RouteProp<
 const SeeMoreEarningScreen = () => {
   const route = useRoute<SeeMoreEarningRouteProp>();
   const {earning} = route.params;
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<
+      StackNavigationProp<RootStackParamList, 'SeeMoreEarningScreen'>
+    >();
   const {theme} = useTheme();
-  const {deleteEarning} = useEarnings();
+  const {deleteEarning, fetchEarnings} = useEarnings();
 
   const parseCreatedAt = parseDate(earning.createdAt);
   const parseUpdatedAt = parseDate(earning.updatedAt);
@@ -35,9 +39,9 @@ const SeeMoreEarningScreen = () => {
       console.log(`the earning id in the see more earning is ${earning.id}`);
 
       await deleteEarning(earning.id);
-
       notify('success', 'Earning deleted successfully', '');
-      navigation.navigate('HomeScreen');
+      fetchEarnings();
+      navigation.replace('HomeScreen');
     } catch (err: any) {
       notify('danger', 'Error deleting earning', err.message);
     }
