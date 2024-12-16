@@ -13,12 +13,17 @@ import {useTheme} from '../context/ThemeContext';
 import {useGraphics} from '../hooks/useGraphics';
 import Wallet from '../components/Wallet';
 import Loading from '../components/loading';
+import {useEarnings} from '../hooks/useEarnings'; // Importa el hook de earnings
 
 const HomeScreen = ({navigation}: any) => {
   const {theme} = useTheme();
   const {graphicsData, loading, error} = useGraphics();
+  const {earnings, fetchEarnings} = useEarnings(); // Trae los earnings actualizados
 
-  console.log('Graphics data:', graphicsData);
+  // Cargar los earnings cada vez que la pantalla se cargue
+  useEffect(() => {
+    fetchEarnings();
+  }, [fetchEarnings]);
 
   useEffect(() => {
     if (error) {
@@ -54,7 +59,6 @@ const HomeScreen = ({navigation}: any) => {
         {backgroundColor: theme.colors.backgrounds},
       ]}>
       <Wallet data={graphicsData} />
-
       <StackedAreaChartComponent
         data={formattedData}
         keys={keys}
@@ -62,7 +66,7 @@ const HomeScreen = ({navigation}: any) => {
       />
 
       <View style={{marginBottom: 20}}>
-        <EarningsDropdown />
+        <EarningsDropdown earnings={earnings} />
       </View>
 
       <TouchableOpacity

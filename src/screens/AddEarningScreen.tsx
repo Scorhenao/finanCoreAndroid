@@ -18,7 +18,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {useEarnings} from '../hooks/useEarnings';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-type EarningData = {
+type AddEarningData = {
   name: string;
   startDate: string;
   endDate: string;
@@ -31,7 +31,7 @@ type AddEarningScreenNavigationProp = StackNavigationProp<
 >;
 
 const AddEarningScreen = () => {
-  const [earningData, setEarningData] = useState<EarningData>({
+  const [earningData, setEarningData] = useState<AddEarningData>({
     name: '',
     startDate: '',
     endDate: '',
@@ -45,7 +45,7 @@ const AddEarningScreen = () => {
   const {createEarning, loading, error, successMessage} = useEarnings();
   const navigation = useNavigation<AddEarningScreenNavigationProp>();
 
-  const handleChange = (name: keyof EarningData, value: string) => {
+  const handleChange = (name: keyof AddEarningData, value: string) => {
     setEarningData({
       ...earningData,
       [name]: value,

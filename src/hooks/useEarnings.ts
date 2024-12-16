@@ -102,6 +102,7 @@ export const useEarnings = () => {
       setError('No token provided');
       return;
     }
+    console.log(`the id in the delete request is ${id}`);
 
     setLoading(true);
     setError(null);
@@ -125,6 +126,7 @@ export const useEarnings = () => {
         console.log('Earning deleted:', response.data);
       } else {
         setError('Unexpected response status');
+        console.log('Unexpected response status:', response.status);
       }
     } catch (err: any) {
       setError(err.response?.data?.message || 'An error occurred');

@@ -12,6 +12,8 @@ import {useRoute} from '@react-navigation/native';
 import {useTheme} from '../context/ThemeContext';
 import {parseDate} from '../common/utils/parseDate';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {useEarnings} from '../hooks/useEarnings';
+import {notify} from '../components/NotificationManager';
 
 type SeeMoreEarningRouteProp = RouteProp<
   RootStackParamList,
@@ -23,9 +25,23 @@ const SeeMoreEarningScreen = () => {
   const {earning} = route.params;
   const navigation = useNavigation();
   const {theme} = useTheme();
+  const {deleteEarning} = useEarnings();
 
   const parseCreatedAt = parseDate(earning.createdAt);
   const parseUpdatedAt = parseDate(earning.updatedAt);
+
+  const handleDeleteEarning = async () => {
+    try {
+      console.log(`the earning id in the see more earning is ${earning.id}`);
+
+      await deleteEarning(earning.id);
+
+      notify('success', 'Earning deleted successfully', '');
+      navigation.navigate('HomeScreen');
+    } catch (err: any) {
+      notify('danger', 'Error deleting earning', err.message);
+    }
+  };
 
   return (
     <ScrollView
@@ -40,7 +56,9 @@ const SeeMoreEarningScreen = () => {
           <Icon name="create-outline" size={24} color={theme.colors.buttons} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.iconButton}>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={handleDeleteEarning}>
           <Icon name="trash-outline" size={24} color={theme.colors.buttons} />
         </TouchableOpacity>
       </View>
