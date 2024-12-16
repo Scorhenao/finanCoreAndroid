@@ -110,7 +110,7 @@ const AddBudgetScreen = () => {
           'Budget Created',
           `Budget "${budgetData.name}" was successfully created.`,
         );
-        navigation.navigate('HomeScreen');
+        navigation.goBack();
       }
     } catch (err: any) {
       notify('danger', 'Error', 'Failed to create budget. Please try again.');
