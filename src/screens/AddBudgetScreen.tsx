@@ -12,9 +12,14 @@ import {useTheme} from '../context/ThemeContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {useRoute} from '@react-navigation/native';
 
 const AddBudgetScreen = () => {
   const {theme} = useTheme();
+  const route = useRoute();
+  const {earningId, amountAvailable, earningName} = route.params;
+
+  console.log(earningId, amountAvailable, earningName);
 
   const [budgetData, setBudgetData] = useState({
     name: '',
@@ -57,12 +62,6 @@ const AddBudgetScreen = () => {
   return (
     <ScrollView
       style={[styles.scrollView, {backgroundColor: theme.colors.backgrounds}]}>
-      <View style={styles.titleContainer}>
-        <Text style={[styles.title, {color: theme.colors.texts}]}>
-          Add Budget
-        </Text>
-      </View>
-
       <View style={styles.inputGroup}>
         <Text style={[styles.label, {color: theme.colors.texts}]}>Name:</Text>
         <View style={styles.inputWithIcon}>
@@ -205,15 +204,15 @@ const AddBudgetScreen = () => {
       {/* Budget Text */}
       <View style={styles.budgetText}>
         <Text style={[styles.modifyText, {color: theme.colors.texts}]}>
-          Budget of {budgetData.name}
+          Budget from {earningName}
         </Text>
       </View>
 
-      <Button
-        title="Save Budget"
-        onPress={() => {}}
-        color={theme.colors.buttons}
-      />
+      <TouchableOpacity
+        style={[styles.saveButton, {backgroundColor: theme.colors.buttons}]}
+        onPress={handleSaveBudget}>
+        <Text style={styles.saveButtonText}>Save Budget</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };

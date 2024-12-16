@@ -92,6 +92,7 @@ const EarningsDropdown = () => {
                     navigation.navigate('AddBudgetScreen', {
                       earningId: earning.id,
                       amountAvailable: freeSalary,
+                      earningName: earning.name,
                     })
                   }>
                   <Icon name="add" size={24} color="#000" />
