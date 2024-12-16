@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useAuthContext} from '../context/AuthContext';
 import RegisterScreen from './RegisterScreen';
@@ -20,6 +20,8 @@ import EditEarningScreen from './EditEarningScreen';
 import AddEarningScreen from './AddEarningScreen';
 import AddBudgetScreen from './AddBudgetScreen';
 import CategoriesScreen from './CategoriesScreen';
+import BudgetsScreen from './BudgetsScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
 
@@ -28,6 +30,26 @@ export default function AppNavigator() {
   const {token, logout} = useAuthContext();
   const navigation = useNavigation();
 
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkToken = async () => {
+      const storedToken = await AsyncStorage.getItem('accessToken');
+      console.log('storedToken in app navigator', storedToken);
+
+      if (storedToken) {
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
+    };
+
+    checkToken();
+  }, []);
+
+  if (loading) {
+    return null;
+  }
   return (
     <Stack.Navigator initialRouteName={token ? 'HomeScreen' : 'RegisterScreen'}>
       <Stack.Screen
@@ -334,6 +356,32 @@ export default function AppNavigator() {
         component={CategoriesScreen}
         options={{
           headerTitle: 'Categories',
+          headerStyle: AppNavigatorStyles.headerStyle,
+          headerBackground: () => (
+            <LinearGradient
+              colors={[theme.colors.texts, theme.colors.backgrounds]}
+              style={AppNavigatorStyles.gradientStyle}
+            />
+          ),
+          headerTintColor: theme.colors.texts,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{marginLeft: 16}}>
+              <Ionicons
+                name="return-down-back"
+                size={28}
+                color={theme.colors.texts}
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="BudgetsScreen"
+        component={BudgetsScreen}
+        options={{
+          headerTitle: 'Budgets',
           headerStyle: AppNavigatorStyles.headerStyle,
           headerBackground: () => (
             <LinearGradient

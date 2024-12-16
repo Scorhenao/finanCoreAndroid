@@ -17,4 +17,5 @@ export type RootStackParamList = {
     earningName: string;
   };
   CategoriesScreen: undefined;
+  BudgetsScreen: {earningId: String; earningName: String};
 };

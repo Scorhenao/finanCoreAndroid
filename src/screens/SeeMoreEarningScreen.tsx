@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {RouteProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../common/types/Navigation-types';
@@ -34,17 +35,36 @@ const SeeMoreEarningScreen = () => {
   const parseCreatedAt = parseDate(earning.createdAt);
   const parseUpdatedAt = parseDate(earning.updatedAt);
 
-  const handleDeleteEarning = async () => {
-    try {
-      console.log(`the earning id in the see more earning is ${earning.id}`);
+  const handleDeleteEarning = () => {
+    Alert.alert(
+      'Are you sure?',
+      'Do you want to delete this earning?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: async () => {
+            try {
+              console.log(
+                `the earning id in the see more earning is ${earning.id}`,
+              );
 
-      await deleteEarning(earning.id);
-      notify('success', 'Earning deleted successfully', '');
-      fetchEarnings();
-      navigation.replace('HomeScreen');
-    } catch (err: any) {
-      notify('danger', 'Error deleting earning', err.message);
-    }
+              await deleteEarning(earning.id);
+              notify('success', 'Earning deleted successfully', '');
+              fetchEarnings();
+              navigation.replace('HomeScreen');
+            } catch (err: any) {
+              notify('danger', 'Error deleting earning', err.message);
+            }
+          },
+        },
+      ],
+      {cancelable: false},
+    );
   };
 
   return (
@@ -64,6 +84,21 @@ const SeeMoreEarningScreen = () => {
           style={styles.iconButton}
           onPress={handleDeleteEarning}>
           <Icon name="trash-outline" size={24} color={theme.colors.buttons} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => {
+            navigation.navigate('BudgetsScreen', {
+              earningId: earning.id,
+              earningName: earning.name,
+            });
+          }}>
+          <Icon
+            name="ellipsis-vertical"
+            size={24}
+            color={theme.colors.buttons}
+          />
         </TouchableOpacity>
       </View>
       <View style={styles.earningDetails}>

@@ -11,6 +11,8 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
   useEffect(() => {
     const loadToken = async () => {
       const storedToken = await AsyncStorage.getItem('accessToken');
+      console.log('storedToken in auth provider', storedToken);
+
       if (storedToken) {
         setToken(storedToken);
       }
@@ -22,11 +24,13 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     if (auth.token) {
       setToken(auth.token);
       AsyncStorage.setItem('accessToken', auth.token);
+      console.log('auth token set in auth context');
     }
   }, [auth.token]);
 
   const logout = async (navigation: any) => {
     await AsyncStorage.removeItem('accessToken');
+    console.log('logout token removed from auth context');
     setToken(null);
     navigation.navigate('LoginScreen');
   };

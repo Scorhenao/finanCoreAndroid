@@ -35,7 +35,7 @@ export const useAuth = (): AuthContextType => {
   useEffect(() => {
     const loadToken = async () => {
       try {
-        const storedToken = await AsyncStorage.getItem('token');
+        const storedToken = await AsyncStorage.getItem('accessToken');
         if (storedToken) {
           setToken(storedToken);
         }
@@ -111,8 +111,10 @@ export const useAuth = (): AuthContextType => {
       if (response.status === 200 || response.status === 201) {
         const {accessToken} = response.data;
         setToken(accessToken);
-        await AsyncStorage.setItem('token', accessToken);
+        await AsyncStorage.setItem('accessToken', accessToken);
         setSuccess(true);
+        console.log('Access token in the useAuth hook:', accessToken);
+
         return true;
       } else {
         setError('Unexpected response status');
