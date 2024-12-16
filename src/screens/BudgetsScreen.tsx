@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useTheme} from '../context/ThemeContext';
@@ -13,23 +14,45 @@ import {RouteProp} from '@react-navigation/native';
 import {RootStackParamList} from '../common/types/Navigation-types';
 import {useBudgets} from '../hooks/useBudgets';
 import {notify} from '../components/NotificationManager';
+import Loading from '../components/loading';
 
 type BudgetScreenRouteProp = RouteProp<RootStackParamList, 'BudgetsScreen'>;
 
 const BudgetsScreen = () => {
   const {theme} = useTheme();
   const route = useRoute<BudgetScreenRouteProp>();
-  const {earningId, earningName} = route.params;
   const navigation = useNavigation();
-  const {loading, error, budgets, getBudgets} = useBudgets(); // Added getBudgets
+  const earningName = route.params.earningName;
+  const {loading, error, budgets, getBudgets, deleteBudget} = useBudgets();
 
-  // Fetch budgets when the component mounts
   useEffect(() => {
-    getBudgets(); // Fetch all budgets
+    getBudgets();
   }, [getBudgets]);
 
+  // Maneja el caso cuando budgets es null o undefined
+  const filteredBudgets =
+    budgets?.filter(budget => budget.earning.name === earningName) || [];
+
+  const handleDeleteBudget = (id: string) => {
+    Alert.alert('Are you sure?', 'Do you really want to delete this budget?', [
+      {text: 'Cancel', style: 'cancel'},
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await deleteBudget(id);
+            notify('success', 'Budget deleted successfully', '');
+          } catch (err: any) {
+            notify('danger', 'Error deleting budget', err.message);
+          }
+        },
+      },
+    ]);
+  };
+
   if (loading) {
-    return <Text>Loading...</Text>;
+    return <Loading />;
   }
 
   if (error) {
@@ -39,8 +62,8 @@ const BudgetsScreen = () => {
   return (
     <ScrollView
       style={[styles.container, {backgroundColor: theme.colors.backgrounds}]}>
-      {budgets && budgets.length > 0 ? (
-        budgets.map(budget => (
+      {filteredBudgets.length > 0 ? (
+        filteredBudgets.map(budget => (
           <View key={budget.id} style={styles.detailsContainer}>
             <Text style={[styles.title, {color: theme.colors.texts}]}>
               Budget of {budget.name}
@@ -113,7 +136,9 @@ const BudgetsScreen = () => {
           </View>
         ))
       ) : (
-        <Text style={{color: theme.colors.texts}}>No budgets found</Text>
+        <Text style={{color: theme.colors.texts}}>
+          No budgets found for this earning
+        </Text>
       )}
     </ScrollView>
   );

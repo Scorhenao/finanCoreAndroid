@@ -29,7 +29,6 @@ export default function AppNavigator() {
   const {theme} = useTheme();
   const {token, logout} = useAuthContext();
   const navigation = useNavigation();
-
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

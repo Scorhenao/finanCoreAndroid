@@ -114,6 +114,45 @@ export const useBudgets = () => {
     }
   }, [token]);
 
+  // DELETE budget
+  const deleteBudget = useCallback(
+    async (id: string) => {
+      if (!token) {
+        setError('No token provided');
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+      setSuccessMessage(null);
+
+      try {
+        const response = await axios.delete(`${Urls.BASE_URL}/budgets/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 204) {
+          setSuccessMessage('Budget deleted successfully');
+          // Optionally, remove the deleted budget from the local state
+          setBudgets(prev => prev?.filter(budget => budget.id !== id) || null);
+        } else {
+          setError('Unexpected response status');
+        }
+      } catch (err: any) {
+        console.error(
+          'Error deleting budget:',
+          err.response?.data || err.message,
+        );
+        setError(err.response?.data?.message || 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [token],
+  );
+
   return {
     loading,
     error,
@@ -122,5 +161,6 @@ export const useBudgets = () => {
     budgets,
     createBudget,
     getBudgets,
+    deleteBudget,
   };
 };
