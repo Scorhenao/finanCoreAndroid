@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useCallback} from 'react';
 import {
   ScrollView,
   Text,
@@ -7,7 +7,11 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {
+  useNavigation,
+  useRoute,
+  useFocusEffect,
+} from '@react-navigation/native';
 import {useTheme} from '../context/ThemeContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {RouteProp} from '@react-navigation/native';
@@ -25,9 +29,12 @@ const BudgetsScreen = () => {
   const earningName = route.params.earningName;
   const {loading, error, budgets, getBudgets, deleteBudget} = useBudgets();
 
-  useEffect(() => {
-    getBudgets();
-  }, [getBudgets]);
+  // Actualiza budgets al volver a la pantalla
+  useFocusEffect(
+    useCallback(() => {
+      getBudgets();
+    }, [getBudgets]),
+  );
 
   const filteredBudgets =
     budgets?.filter(budget => budget.earning.name === earningName) || [];
@@ -119,14 +126,6 @@ const BudgetsScreen = () => {
                 onPress={() => handleDeleteBudget(budget.id)}>
                 <Icon
                   name="trash-outline"
-                  size={24}
-                  color={theme.colors.buttons}
-                />
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.iconButton}>
-                <Icon
-                  name="calendar-outline"
                   size={24}
                   color={theme.colors.buttons}
                 />
