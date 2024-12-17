@@ -38,10 +38,9 @@ const BudgetsScreen = () => {
   console.log('budgets', budgets);
   console.log('transactions', transactions);
 
-  // Memoize filteredBudgets to prevent unnecessary recalculations
   const filteredBudgets = useMemo(
     () => budgets?.filter(budget => budget.earning.name === earningName) || [],
-    [budgets, earningName], // Only recompute when budgets or earningName change
+    [budgets, earningName],
   );
 
   useEffect(() => {
@@ -75,7 +74,7 @@ const BudgetsScreen = () => {
       console.log('Total Income:', income); // Muestra el total calculado
       console.log('Total Expenses:', expenses); // Muestra el total calculado
     }
-  }, [transactions, filteredBudgets]); // Solo dependemos de las transacciones y los presupuestos filtrados
+  }, [transactions, filteredBudgets]);
 
   const handleDeleteBudget = (id: string) => {
     Alert.alert('Are you sure?', 'Do you really want to delete this budget?', [

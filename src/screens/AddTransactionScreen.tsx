@@ -126,23 +126,25 @@ const AddTransactionScreen = () => {
           <Text style={{color: theme.colors.texts}}>Save Transaction</Text>
         )}
       </TouchableOpacity>
-
       <View style={styles.transactionsList}>
         {transactions && transactions.length > 0 ? (
-          transactions.map(transaction => {
-            const amountString = transaction.amount.replace(/[^\d.-]/g, '');
-            const amount = parseFloat(amountString);
+          transactions
+            .filter(transaction => transaction.budget.id === budgetId) // Filtra las transacciones por el presupuesto actual
+            .map(transaction => {
+              const amountString = transaction.amount.replace(/[^\d.-]/g, ''); // Limpia el monto
+              const amount = parseFloat(amountString);
 
-            const amountColor = amount < 0 ? 'red' : 'green';
+              // Determina el color dependiendo del signo del monto
+              const amountColor = amount < 0 ? 'red' : 'green'; // Rojo para negativos, verde para positivos
 
-            return (
-              <View key={transaction.id} style={styles.transactionItem}>
-                <Text style={{color: amountColor}}>
-                  {transaction.description}: {transaction.amount} COP
-                </Text>
-              </View>
-            );
-          })
+              return (
+                <View key={transaction.id} style={styles.transactionItem}>
+                  <Text style={{color: amountColor}}>
+                    {transaction.description}: {transaction.amount} COP
+                  </Text>
+                </View>
+              );
+            })
         ) : (
           <Text style={{color: 'red'}}>
             No transactions found for this budget.
