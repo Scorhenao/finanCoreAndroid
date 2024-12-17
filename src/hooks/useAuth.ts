@@ -34,13 +34,9 @@ export const useAuth = (): AuthContextType => {
 
   useEffect(() => {
     const loadToken = async () => {
-      try {
-        const storedToken = await AsyncStorage.getItem('accessToken');
-        if (storedToken) {
-          setToken(storedToken);
-        }
-      } catch (err: any) {
-        console.error('error loading token', err);
+      const storedToken = await AsyncStorage.getItem('accessToken');
+      if (storedToken) {
+        setToken(storedToken);
       }
     };
 
@@ -113,20 +109,13 @@ export const useAuth = (): AuthContextType => {
         setToken(accessToken);
         await AsyncStorage.setItem('accessToken', accessToken);
         setSuccess(true);
-        console.log('Access token in the useAuth hook:', accessToken);
-
         return true;
       } else {
         setError('Unexpected response status');
-        console.log(response.data);
-        console.log(response.status);
-        console.log(response.request);
         return false;
       }
     } catch (err: any) {
       setError(err.response?.data?.message || 'An error occurred during login');
-      console.log(err.response?.data?.message);
-
       return false;
     } finally {
       setLoading(false);

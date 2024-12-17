@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   ScrollView,
   View,
   Text,
   TextInput,
-  Button,
   TouchableOpacity,
+  Button,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useTheme} from '../context/ThemeContext';
@@ -15,9 +15,9 @@ import {useAuth} from '../hooks/useAuth';
 import {notify} from '../components/NotificationManager';
 import Loading from '../components/loading';
 import {useNavigation} from '@react-navigation/native';
-import {RootStackParamList} from '../common/types/Navigation-types';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {FileType} from '../common/types/FileTypes';
+import {RootStackParamList} from '../common/types/Navigation-types';
 
 type FormData = {
   name: string;
@@ -43,6 +43,7 @@ const RegisterScreen = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [selectedFile, setSelectedFile] = useState<FileType | null>(null);
+
   const handleFileSelection = (file: FileType | null) => {
     setSelectedFile(file);
   };
@@ -50,6 +51,12 @@ const RegisterScreen = () => {
   const {theme} = useTheme();
   const {registerUser, loading, error, success} = useAuth();
   const navigation = useNavigation<RegisterScreenNavigationProp>();
+
+  useEffect(() => {
+    if (error) {
+      notify('danger', `Error: ${error}`);
+    }
+  }, [error]);
 
   const handleChange = (name: keyof FormData, value: string) => {
     setFormData({
@@ -74,10 +81,7 @@ const RegisterScreen = () => {
 
     if (success) {
       notify('success', 'Registration successful');
-      console.log('Registration successful, navigating to Login screen');
       navigation.navigate('LoginScreen');
-    } else if (error) {
-      notify('danger', `Error: ${error}`);
     }
   };
 
@@ -93,145 +97,43 @@ const RegisterScreen = () => {
           <Text style={[AuthStyles.title, {color: theme.colors.texts}]}>
             Sign up
           </Text>
-
           <View style={AuthStyles.nameNumberContainer}>
-            <View style={AuthStyles.inputGroup}>
-              <Text style={[AuthStyles.label, {color: theme.colors.texts}]}>
-                Name:
-              </Text>
-              <View style={AuthStyles.inputWithIcon}>
-                <Icon
-                  name="person-outline"
-                  size={20}
-                  color={theme.colors.texts}
-                />
-                <TextInput
-                  style={[
-                    AuthStyles.input,
-                    {
-                      borderColor: theme.colors.inputs,
-                      color: theme.colors.texts,
-                    },
-                  ]}
-                  value={formData.name}
-                  onChangeText={text => handleChange('name', text)}
-                  placeholder="Your name"
-                  placeholderTextColor={theme.colors.texts}
-                />
-              </View>
-            </View>
-
-            <View style={AuthStyles.inputGroup}>
-              <Text style={[AuthStyles.label, {color: theme.colors.texts}]}>
-                Number:
-              </Text>
-              <View style={AuthStyles.inputWithIcon}>
-                <Icon
-                  name="call-outline"
-                  size={20}
-                  color={theme.colors.texts}
-                />
-                <TextInput
-                  style={[
-                    AuthStyles.input,
-                    {
-                      borderColor: theme.colors.inputs,
-                      color: theme.colors.texts,
-                    },
-                  ]}
-                  value={formData.number}
-                  onChangeText={text => handleChange('number', text)}
-                  placeholder="Your number"
-                  placeholderTextColor={theme.colors.texts}
-                />
-              </View>
-            </View>
+            <InputField
+              label="Name"
+              value={formData.name}
+              onChange={text => handleChange('name', text)}
+              icon="person-outline"
+            />
+            <InputField
+              label="Number"
+              value={formData.number}
+              onChange={text => handleChange('number', text)}
+              icon="call-outline"
+            />
           </View>
         </View>
       </View>
 
-      <View style={AuthStyles.inputGroup}>
-        <Text style={[AuthStyles.label, {color: theme.colors.texts}]}>
-          Email:
-        </Text>
-        <View style={AuthStyles.inputWithIcon}>
-          <Icon name="mail-outline" size={20} color={theme.colors.texts} />
-          <TextInput
-            style={[
-              AuthStyles.input,
-              {borderColor: theme.colors.inputs, color: theme.colors.texts},
-            ]}
-            value={formData.email}
-            onChangeText={text => handleChange('email', text)}
-            placeholder="Your email"
-            placeholderTextColor={theme.colors.texts}
-          />
-        </View>
-      </View>
-
-      <View style={AuthStyles.inputGroup}>
-        <Text style={[AuthStyles.label, {color: theme.colors.texts}]}>
-          Password:
-        </Text>
-        <View style={AuthStyles.inputWithIcon}>
-          <Icon
-            name="lock-closed-outline"
-            size={20}
-            color={theme.colors.texts}
-          />
-          <TextInput
-            style={[
-              AuthStyles.input,
-              {borderColor: theme.colors.inputs, color: theme.colors.texts},
-            ]}
-            value={formData.password}
-            onChangeText={text => handleChange('password', text)}
-            placeholder="Your password"
-            secureTextEntry={!passwordVisible}
-            placeholderTextColor={theme.colors.texts}
-          />
-          <TouchableOpacity
-            onPress={() => setPasswordVisible(!passwordVisible)}>
-            <Icon
-              name={passwordVisible ? 'eye-off-outline' : 'eye-outline'}
-              size={23}
-              color={theme.colors.texts}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={AuthStyles.inputGroup}>
-        <Text style={[AuthStyles.label, {color: theme.colors.texts}]}>
-          Confirm Password:
-        </Text>
-        <View style={AuthStyles.inputWithIcon}>
-          <Icon
-            name="lock-closed-outline"
-            size={20}
-            color={theme.colors.texts}
-          />
-          <TextInput
-            style={[
-              AuthStyles.input,
-              {borderColor: theme.colors.inputs, color: theme.colors.texts},
-            ]}
-            value={formData.confirmPassword}
-            onChangeText={text => handleChange('confirmPassword', text)}
-            placeholder="Confirm your password"
-            secureTextEntry={!confirmPasswordVisible}
-            placeholderTextColor={theme.colors.texts}
-          />
-          <TouchableOpacity
-            onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}>
-            <Icon
-              name={confirmPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
-              size={23}
-              color={theme.colors.texts}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
+      <InputField
+        label="Email"
+        value={formData.email}
+        onChange={text => handleChange('email', text)}
+        icon="mail-outline"
+      />
+      <PasswordField
+        label="Password"
+        value={formData.password}
+        onChange={text => handleChange('password', text)}
+        visible={passwordVisible}
+        setVisible={setPasswordVisible}
+      />
+      <PasswordField
+        label="Confirm Password"
+        value={formData.confirmPassword}
+        onChange={text => handleChange('confirmPassword', text)}
+        visible={confirmPasswordVisible}
+        setVisible={setConfirmPasswordVisible}
+      />
 
       {loading ? (
         <Loading />
@@ -243,6 +145,84 @@ const RegisterScreen = () => {
         />
       )}
     </ScrollView>
+  );
+};
+
+const InputField = ({
+  label,
+  value,
+  onChange,
+  icon,
+}: {
+  label: string;
+  value: string;
+  onChange: (text: string) => void;
+  icon: string;
+}) => {
+  const {theme} = useTheme();
+  return (
+    <View style={AuthStyles.inputGroup}>
+      <Text style={[AuthStyles.label, {color: theme.colors.texts}]}>
+        {label}:
+      </Text>
+      <View style={AuthStyles.inputWithIcon}>
+        <Icon name={icon} size={20} color={theme.colors.texts} />
+        <TextInput
+          style={[
+            AuthStyles.input,
+            {borderColor: theme.colors.inputs, color: theme.colors.texts},
+          ]}
+          value={value}
+          onChangeText={onChange}
+          placeholder={`Your ${label.toLowerCase()}`}
+          placeholderTextColor={theme.colors.texts}
+        />
+      </View>
+    </View>
+  );
+};
+
+const PasswordField = ({
+  label,
+  value,
+  onChange,
+  visible,
+  setVisible,
+}: {
+  label: string;
+  value: string;
+  onChange: (text: string) => void;
+  visible: boolean;
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  const {theme} = useTheme();
+  return (
+    <View style={AuthStyles.inputGroup}>
+      <Text style={[AuthStyles.label, {color: theme.colors.texts}]}>
+        {label}:
+      </Text>
+      <View style={AuthStyles.inputWithIcon}>
+        <Icon name="lock-closed-outline" size={20} color={theme.colors.texts} />
+        <TextInput
+          style={[
+            AuthStyles.input,
+            {borderColor: theme.colors.inputs, color: theme.colors.texts},
+          ]}
+          value={value}
+          onChangeText={onChange}
+          placeholder={`Your ${label.toLowerCase()}`}
+          secureTextEntry={!visible}
+          placeholderTextColor={theme.colors.texts}
+        />
+        <TouchableOpacity onPress={() => setVisible(!visible)}>
+          <Icon
+            name={visible ? 'eye-off-outline' : 'eye-outline'}
+            size={23}
+            color={theme.colors.texts}
+          />
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 

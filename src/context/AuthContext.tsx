@@ -11,26 +11,34 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
   useEffect(() => {
     const loadToken = async () => {
       const storedToken = await AsyncStorage.getItem('accessToken');
-      console.log('storedToken in auth provider', storedToken);
-
       if (storedToken) {
         setToken(storedToken);
       }
     };
+
     loadToken();
+
+    const tokenInterval = setInterval(async () => {
+      const storedToken = await AsyncStorage.getItem('accessToken');
+      if (storedToken) {
+        setToken(storedToken);
+      } else {
+        setToken(null);
+      }
+    }, 2000);
+
+    return () => clearInterval(tokenInterval);
   }, []);
 
   useEffect(() => {
     if (auth.token) {
       setToken(auth.token);
       AsyncStorage.setItem('accessToken', auth.token);
-      console.log('auth token set in auth context');
     }
   }, [auth.token]);
 
   const logout = async (navigation: any) => {
     await AsyncStorage.removeItem('accessToken');
-    console.log('logout token removed from auth context');
     setToken(null);
     navigation.navigate('LoginScreen');
   };
