@@ -5,6 +5,7 @@ import {useEarnings} from '../hooks/useEarnings';
 import {useAuthContext} from '../context/AuthContext';
 import {useNavigation} from '@react-navigation/native';
 import Loading from './loading';
+import BarChartComponent from './BarChartComponent'; // Import the BarChartComponent
 import {Earning} from '../common/interfaces/earning.interface';
 
 const EarningsDropdown = () => {
@@ -50,6 +51,16 @@ const EarningsDropdown = () => {
         );
 
         const freeSalary = generalAmount - amountBudgeted;
+
+        // Prepare the data for the chart
+        const chartData = [
+          {
+            month: earning.name,
+            budgeted: amountBudgeted,
+            available: generalAmount,
+            amountAvailable: freeSalary,
+          },
+        ];
 
         return (
           <View key={earning.id} style={styles.earningItem}>
@@ -98,6 +109,13 @@ const EarningsDropdown = () => {
                   <Icon name="add" size={24} color="#000" />
                   <Text style={styles.menuText}>Add Budget</Text>
                 </TouchableOpacity>
+
+                {/* Render the chart below the dropdown */}
+                <BarChartComponent
+                  data={chartData}
+                  keys={['budgeted', 'available']}
+                  colors={['#4CAF50', '#FF9800']} // Adjust the colors as needed
+                />
               </View>
             )}
           </View>
