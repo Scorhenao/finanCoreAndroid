@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   ScrollView,
   View,
@@ -17,6 +17,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../common/types/Navigation-types';
 import {useNavigation} from '@react-navigation/native';
 import {notify} from '../components/NotificationManager';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -36,6 +37,24 @@ const LoginScreen = () => {
   const {theme} = useTheme();
   const {loginUser, loading, error} = useAuth();
 
+  useEffect(() => {
+    // Retrieve the stored credentials if the "Remember Password" is true
+    const loadCredentials = async () => {
+      const storedRememberPassword = await AsyncStorage.getItem(
+        'rememberPassword',
+      );
+      if (storedRememberPassword === 'true') {
+        const storedEmail = await AsyncStorage.getItem('email');
+        const storedPassword = await AsyncStorage.getItem('password');
+        if (storedEmail && storedPassword) {
+          setFormData({email: storedEmail, password: storedPassword});
+          setRememberPassword(true);
+        }
+      }
+    };
+    loadCredentials();
+  }, []);
+
   const handleChange = (name: string, value: string) => {
     setFormData({
       ...formData,
@@ -52,6 +71,17 @@ const LoginScreen = () => {
     const loginSuccess = await loginUser(formData.email, formData.password);
 
     if (loginSuccess) {
+      // Save credentials to AsyncStorage if "Remember Password" is enabled
+      if (rememberPassword) {
+        await AsyncStorage.setItem('email', formData.email);
+        await AsyncStorage.setItem('password', formData.password);
+        await AsyncStorage.setItem('rememberPassword', 'true');
+      } else {
+        await AsyncStorage.removeItem('email');
+        await AsyncStorage.removeItem('password');
+        await AsyncStorage.setItem('rememberPassword', 'false');
+      }
+
       notify('success', 'Login successful', 'Welcome back!');
       navigation.navigate('HomeScreen');
     } else if (error) {
@@ -62,6 +92,7 @@ const LoginScreen = () => {
   const handleRecoveryPassword = () => {
     navigation.navigate('ForgotPasswordScreen');
   };
+
   return (
     <ScrollView
       style={[

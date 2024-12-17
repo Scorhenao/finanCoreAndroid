@@ -7,18 +7,16 @@ import {
   Text,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import StackedAreaChartComponent from '../components/StackedAreaChartComponent';
 import EarningsDropdown from '../components/EarningsDropdown';
 import {useTheme} from '../context/ThemeContext';
-import {useGraphics} from '../hooks/useGraphics';
 import Wallet from '../components/Wallet';
 import Loading from '../components/loading';
 import {useEarnings} from '../hooks/useEarnings';
+import BarChartComponent from '../components/BarChartComponent';
 
 const HomeScreen = ({navigation}: any) => {
   const {theme} = useTheme();
-  const {graphicsData, loading, error} = useGraphics();
-  const {earnings, fetchEarnings} = useEarnings();
+  const {earnings, fetchEarnings, loading, error} = useEarnings();
 
   useEffect(() => {
     fetchEarnings();
@@ -42,11 +40,24 @@ const HomeScreen = ({navigation}: any) => {
     );
   }
 
-  const formattedData = graphicsData.map(item => ({
-    month: item.name,
-    budgeted: parseFloat(item.percentageBudgeted) || 0,
-    available: parseFloat(item.percentageAvailable) || 0,
-  }));
+  const earningsData = Array.isArray(earnings) ? earnings : earnings?.data;
+
+  const formattedData = Array.isArray(earningsData)
+    ? earningsData.map(item => {
+        const budgeted =
+          parseFloat(item.amountBudgeted.replace(/[^0-9.]/g, '')) || 0;
+        const available =
+          parseFloat(item.generalAmount.replace(/[^0-9.]/g, '')) || 0;
+        const amountAvailable = available - budgeted; // Calculate available amount
+
+        return {
+          month: item.name,
+          budgeted,
+          available,
+          amountAvailable,
+        };
+      })
+    : [];
 
   const keys = ['budgeted', 'available'];
   const colors = [theme.colors.hovers, theme.colors.buttons];
@@ -57,15 +68,17 @@ const HomeScreen = ({navigation}: any) => {
         styles.scrollContainer,
         {backgroundColor: theme.colors.backgrounds},
       ]}>
-      <Wallet data={graphicsData} />
-      <StackedAreaChartComponent
-        data={formattedData}
-        keys={keys}
-        colors={colors}
-      />
+      {Array.isArray(earningsData) && earningsData.length > 0 ? (
+        <>
+          <Wallet data={formattedData} />
+          <BarChartComponent data={formattedData} keys={keys} colors={colors} />
+        </>
+      ) : (
+        <Text>No earnings available</Text>
+      )}
 
       <View style={{marginBottom: 20}}>
-        <EarningsDropdown earnings={earnings} />
+        <EarningsDropdown earnings={earningsData} />
       </View>
 
       <TouchableOpacity

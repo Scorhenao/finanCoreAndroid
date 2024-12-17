@@ -5,24 +5,23 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 interface WalletProps {
   data: {
-    name: string;
-    generalAmount: string;
-    amountBudgeted: string;
+    month: string;
+    budgeted: number;
+    available: number;
     amountAvailable: number;
   }[];
 }
 
 const Wallet: React.FC<WalletProps> = ({data}) => {
   const {theme} = useTheme();
+
   const totalAvailable = data.reduce(
     (acc, item) => acc + item.amountAvailable,
     0,
   );
-  const totalBudgeted = data.reduce(
-    (acc, item) =>
-      acc + parseFloat(item.amountBudgeted.replace(/[^0-9.-]+/g, '')),
-    0,
-  );
+
+  // No need to call `replace()` on budgeted values since they are numbers now
+  const totalBudgeted = data.reduce((acc, item) => acc + item.budgeted, 0);
 
   const [isOpen, setIsOpen] = useState(false);
 
