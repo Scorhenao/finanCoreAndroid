@@ -132,7 +132,7 @@ const BudgetsScreen = () => {
 
             const data = [
               {key: 'Income', value: income, svg: {fill: 'green'}},
-              {key: 'Expenses', value: expenses, svg: {fill: 'red'}},
+              {key: 'Expenses', value: Math.abs(expenses), svg: {fill: 'red'}}, // Convertir los gastos a positivo solo para visualización
             ];
 
             return (
