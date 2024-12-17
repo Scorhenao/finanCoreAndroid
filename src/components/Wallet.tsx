@@ -20,10 +20,11 @@ const Wallet: React.FC<WalletProps> = ({data}) => {
     0,
   );
 
-  // No need to call `replace()` on budgeted values since they are numbers now
   const totalBudgeted = data.reduce((acc, item) => acc + item.budgeted, 0);
 
   const [isOpen, setIsOpen] = useState(false);
+
+  const totalGeneral = data.reduce((acc, item) => acc + item.available, 0);
 
   const toggleWallet = () => {
     setIsOpen(prevState => !prevState);
@@ -49,6 +50,9 @@ const Wallet: React.FC<WalletProps> = ({data}) => {
               color={theme.colors.texts}
             />
             <Text style={[styles.walletText, {color: theme.colors.texts}]}>
+              {isOpen ? 'Total General: ' + totalGeneral : ''}
+            </Text>
+            <Text style={[styles.walletText, {color: theme.colors.texts}]}>
               {isOpen
                 ? 'Total available: ' + totalAvailable.toLocaleString()
                 : 'Tap to open wallet'}
@@ -71,7 +75,7 @@ const styles = StyleSheet.create({
   walletContainer: {
     width: '100%',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
     padding: 10,
   },
   wallet: {
@@ -95,7 +99,7 @@ const styles = StyleSheet.create({
   },
   walletOpening: {
     width: '100%',
-    height: '80%',
+    height: '100%',
     borderRadius: 25,
     padding: 20,
     justifyContent: 'center',
@@ -106,7 +110,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   walletText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     textShadowOffset: {width: 1, height: 1},
     textShadowRadius: 5,

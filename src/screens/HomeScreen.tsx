@@ -48,7 +48,7 @@ const HomeScreen = ({navigation}: any) => {
           parseFloat(item.amountBudgeted.replace(/[^0-9.]/g, '')) || 0;
         const available =
           parseFloat(item.generalAmount.replace(/[^0-9.]/g, '')) || 0;
-        const amountAvailable = available - budgeted; // Calculate available amount
+        const amountAvailable = available - budgeted;
 
         return {
           month: item.name,
