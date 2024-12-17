@@ -126,6 +126,7 @@ const AddTransactionScreen = () => {
           <Text style={{color: theme.colors.texts}}>Save Transaction</Text>
         )}
       </TouchableOpacity>
+
       <View style={styles.transactionsList}>
         {transactions && transactions.length > 0 ? (
           transactions
@@ -134,7 +135,15 @@ const AddTransactionScreen = () => {
                 transaction?.budget && transaction.budget.id === budgetId,
             )
             .map(transaction => {
-              const amountColor = transaction.amount < 0 ? 'red' : 'green';
+              // Limpia la cadena de cantidad (eliminando '$' y las comas)
+              const amountString = transaction.amount.replace(/[^0-9.-]+/g, ''); // Elimina '$' y comas
+              const amount = parseFloat(amountString); // Convierte la cantidad a número
+
+              // Determina el color basado en si es positivo o negativo
+              const amountColor = amount < 0 ? 'red' : 'green';
+
+              console.log('transaction', transaction.amount, amount); // Para depuración
+
               return (
                 <View key={transaction.id} style={styles.transactionItem}>
                   <Text style={{color: amountColor}}>

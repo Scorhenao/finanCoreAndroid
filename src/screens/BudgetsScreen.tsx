@@ -53,28 +53,24 @@ const BudgetsScreen = () => {
       transactions.forEach(transaction => {
         filteredBudgets.forEach(budget => {
           if (transaction.budget.id === budget.id) {
-            // Convierte las cantidades a números eliminando el símbolo de la moneda
             const amount = parseFloat(
               transaction.amount.replace(/[^\d.-]/g, ''),
             );
 
-            // Si la transacción es positiva, es un ingreso
             if (amount > 0) {
               income += amount;
             } else {
-              // Si la transacción es negativa, es un gasto
               expenses += amount;
             }
           }
         });
       });
 
-      // Actualiza los totales solo después de realizar los cálculos
       setTotalIncome(income);
       setTotalExpenses(expenses);
 
-      console.log('Total Income:', income); // Muestra el total calculado
-      console.log('Total Expenses:', expenses); // Muestra el total calculado
+      console.log('Total Income:', income);
+      console.log('Total Expenses:', expenses);
     }
   }, [transactions, filteredBudgets]);
 
@@ -124,14 +120,11 @@ const BudgetsScreen = () => {
                 datasets: [
                   {
                     data: [totalIncome, totalExpenses],
-                    colors: [
-                      () => 'green', // Color para los ingresos
-                      () => 'red', // Color para los gastos
-                    ],
+                    colors: [() => 'green', () => 'red'],
                   },
                 ],
               }}
-              width={width - 40} // Ajuste dinámico para que ocupe un 90% del ancho de la pantalla
+              width={width - 40}
               height={220}
               chartConfig={{
                 backgroundColor: theme.colors.backgrounds,
@@ -148,7 +141,7 @@ const BudgetsScreen = () => {
                   stroke: 'green',
                 },
                 propsForLabels: {
-                  fontSize: 8, // Disminuye el tamaño de las etiquetas
+                  fontSize: 8,
                 },
               }}
               style={{
@@ -157,7 +150,6 @@ const BudgetsScreen = () => {
             />
           </View>
 
-          {/* El resto del contenido como ya está */}
           {filteredBudgets.map(budget => (
             <View key={budget.id} style={BudgetsStyles.detailsContainer}>
               <Text style={[BudgetsStyles.title, {color: theme.colors.texts}]}>
