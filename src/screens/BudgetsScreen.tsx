@@ -1,12 +1,5 @@
 import React, {useState, useCallback, useEffect, useMemo} from 'react';
-import {
-  ScrollView,
-  Text,
-  View,
-  TouchableOpacity,
-  Alert,
-  Dimensions,
-} from 'react-native';
+import {ScrollView, Text, View, TouchableOpacity, Alert} from 'react-native';
 import {
   useNavigation,
   useRoute,
@@ -39,7 +32,6 @@ const BudgetsScreen = () => {
   useFocusEffect(
     useCallback(() => {
       getBudgets();
-
       getTransactions();
     }, [getBudgets, getTransactions]),
   );
@@ -101,10 +93,6 @@ const BudgetsScreen = () => {
     return <Text>{error}</Text>;
   }
 
-  const {width} = Dimensions.get('window');
-
-  console.log('the transactions are in the budgets screen', transactions);
-
   return (
     <ScrollView
       style={[
@@ -116,7 +104,13 @@ const BudgetsScreen = () => {
           {filteredBudgets.map(budget => {
             let income = 0;
             let expenses = 0;
-
+            if (transactions == null) {
+              return (
+                <View key={budget.id}>
+                  <Text>No transactions found</Text>
+                </View>
+              );
+            }
             transactions.forEach(transaction => {
               if (transaction.budget.id === budget.id) {
                 const amount = parseFloat(
@@ -130,9 +124,15 @@ const BudgetsScreen = () => {
               }
             });
 
+            const totalAmount = income + expenses;
+            const incomePercentage =
+              totalAmount === 0 ? 0 : (income / totalAmount) * 100;
+            const expensesPercentage =
+              totalAmount === 0 ? 0 : (Math.abs(expenses) / totalAmount) * 100;
+
             const data = [
               {key: 'Income', value: income, svg: {fill: 'green'}},
-              {key: 'Expenses', value: Math.abs(expenses), svg: {fill: 'red'}}, // Convertir los gastos a positivo solo para visualización
+              {key: 'Expenses', value: Math.abs(expenses), svg: {fill: 'red'}},
             ];
 
             return (
@@ -149,6 +149,23 @@ const BudgetsScreen = () => {
                   innerRadius={'45%'}
                   data={data}
                 />
+
+                {/* Show percentages under the chart */}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginBottom: 20,
+                  }}>
+                  <Text
+                    style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
+                    {incomePercentage.toFixed(1)}% Income
+                  </Text>
+                  <Text
+                    style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
+                    {expensesPercentage.toFixed(1)}% Expenses
+                  </Text>
+                </View>
 
                 <Text
                   style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
