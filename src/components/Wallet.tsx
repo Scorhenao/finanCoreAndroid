@@ -30,6 +30,10 @@ const Wallet: React.FC<WalletProps> = ({data}) => {
     setIsOpen(prevState => !prevState);
   };
 
+  const formatCurrency = (value: number) => {
+    return `$ ${value.toLocaleString('es-CO')}`; // Formato de pesos colombianos
+  };
+
   return (
     <View style={styles.walletContainer}>
       <TouchableOpacity onPress={toggleWallet}>
@@ -50,17 +54,17 @@ const Wallet: React.FC<WalletProps> = ({data}) => {
               color={theme.colors.texts}
             />
             <Text style={[styles.walletText, {color: theme.colors.texts}]}>
-              {isOpen ? 'Total General: ' + totalGeneral : ''}
+              {isOpen ? 'Total General: ' + formatCurrency(totalGeneral) : ''}
             </Text>
             <Text style={[styles.walletText, {color: theme.colors.texts}]}>
               {isOpen
-                ? 'Total available: ' + totalAvailable.toLocaleString()
+                ? 'Total available: ' + formatCurrency(totalAvailable)
                 : 'Tap to open wallet'}
             </Text>
             {isOpen && (
               <>
                 <Text style={[styles.walletText, {color: theme.colors.texts}]}>
-                  Total budgeted: ${totalBudgeted.toLocaleString()}
+                  Total budgeted: {formatCurrency(totalBudgeted)}
                 </Text>
               </>
             )}
