@@ -14,6 +14,8 @@ import {notify} from '../components/NotificationManager';
 import Loading from '../components/loading';
 import {BudgetsStyles} from '../css/BudgetsStyles';
 import {useTransactions} from '../hooks/useTransactions';
+import {BarChart} from 'react-native-chart-kit';
+import {Dimensions} from 'react-native';
 
 type BudgetScreenRouteProp = RouteProp<RootStackParamList, 'BudgetsScreen'>;
 
@@ -102,6 +104,8 @@ const BudgetsScreen = () => {
     return <Text>{error}</Text>;
   }
 
+  const {width} = Dimensions.get('window');
+
   return (
     <ScrollView
       style={[
@@ -109,110 +113,156 @@ const BudgetsScreen = () => {
         {backgroundColor: theme.colors.backgrounds},
       ]}>
       {filteredBudgets.length > 0 ? (
-        filteredBudgets.map(budget => (
-          <View key={budget.id} style={BudgetsStyles.detailsContainer}>
+        <>
+          <View style={{padding: 10, marginBottom: 20}}>
             <Text style={[BudgetsStyles.title, {color: theme.colors.texts}]}>
-              Budget of {budget.name}
+              Ingresos y Gastos
             </Text>
-            <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
-              Description:
-            </Text>
-            <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
-              {budget.description}
-            </Text>
-
-            <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
-              Budget Amount:
-            </Text>
-            <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
-              {budget.amount} COP
-            </Text>
-
-            <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
-              Category:
-            </Text>
-            <View
-              style={[
-                BudgetsStyles.categoryContainer,
-                {borderColor: theme.colors.texts},
-              ]}>
-              <Text style={[{color: theme.colors.texts}]}>
-                {budget.category.name}
-              </Text>
-            </View>
-
-            <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
-              Budget From:
-            </Text>
-            <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
-              {budget.earning.name}
-            </Text>
-            <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
-              Start Date:
-            </Text>
-            <View style={BudgetsStyles.dateContainer}>
-              <Icon
-                name="calendar-outline"
-                size={20}
-                color={theme.colors.buttons}
-                style={BudgetsStyles.icon}
-              />
-              <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
-                {budget.startDate}
-              </Text>
-            </View>
-
-            <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
-              End Date:
-            </Text>
-            <View style={BudgetsStyles.dateContainer}>
-              <Icon
-                name="calendar-outline"
-                size={20}
-                color={theme.colors.buttons}
-                style={BudgetsStyles.icon}
-              />
-              <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
-                {budget.endDate}
-              </Text>
-            </View>
-
-            <View style={BudgetsStyles.header}>
-              <TouchableOpacity
-                style={BudgetsStyles.iconButton}
-                onPress={() =>
-                  navigation.navigate('EditBudgetScreen', {budget})
-                }>
-                <Icon
-                  name="create-outline"
-                  size={24}
-                  color={theme.colors.buttons}
-                />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={BudgetsStyles.iconButton}
-                onPress={() =>
-                  navigation.navigate('AddTransactionScreen', {
-                    budgetId: budget.id,
-                    budgetName: budget.name,
-                  })
-                }>
-                <Icon name="cash" size={24} color={theme.colors.buttons} />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={BudgetsStyles.iconButton}
-                onPress={() => handleDeleteBudget(budget.id)}>
-                <Icon
-                  name="trash-outline"
-                  size={24}
-                  color={theme.colors.buttons}
-                />
-              </TouchableOpacity>
-            </View>
+            <BarChart
+              data={{
+                labels: ['Ingresos', 'Gastos'],
+                datasets: [
+                  {
+                    data: [totalIncome, totalExpenses],
+                    colors: [
+                      () => 'green', // Color para los ingresos
+                      () => 'red', // Color para los gastos
+                    ],
+                  },
+                ],
+              }}
+              width={width - 40} // Ajuste dinámico para que ocupe un 90% del ancho de la pantalla
+              height={220}
+              chartConfig={{
+                backgroundColor: theme.colors.backgrounds,
+                backgroundGradientFrom: theme.colors.texts,
+                decimalPlaces: 2,
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                style: {
+                  borderRadius: 16,
+                },
+                propsForDots: {
+                  r: '6',
+                  strokeWidth: '2',
+                  stroke: 'green',
+                },
+                propsForLabels: {
+                  fontSize: 8, // Disminuye el tamaño de las etiquetas
+                },
+              }}
+              style={{
+                borderRadius: 16,
+              }}
+            />
           </View>
-        ))
+
+          {/* El resto del contenido como ya está */}
+          {filteredBudgets.map(budget => (
+            <View key={budget.id} style={BudgetsStyles.detailsContainer}>
+              <Text style={[BudgetsStyles.title, {color: theme.colors.texts}]}>
+                Budget of {budget.name}
+              </Text>
+              <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
+                Description:
+              </Text>
+              <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
+                {budget.description}
+              </Text>
+
+              <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
+                Budget Amount:
+              </Text>
+              <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
+                {budget.amount} COP
+              </Text>
+
+              <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
+                Category:
+              </Text>
+              <View
+                style={[
+                  BudgetsStyles.categoryContainer,
+                  {borderColor: theme.colors.texts},
+                ]}>
+                <Text style={[{color: theme.colors.texts}]}>
+                  {budget.category.name}
+                </Text>
+              </View>
+
+              <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
+                Budget From:
+              </Text>
+              <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
+                {budget.earning.name}
+              </Text>
+              <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
+                Start Date:
+              </Text>
+              <View style={BudgetsStyles.dateContainer}>
+                <Icon
+                  name="calendar-outline"
+                  size={20}
+                  color={theme.colors.buttons}
+                  style={BudgetsStyles.icon}
+                />
+                <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
+                  {budget.startDate}
+                </Text>
+              </View>
+
+              <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
+                End Date:
+              </Text>
+              <View style={BudgetsStyles.dateContainer}>
+                <Icon
+                  name="calendar-outline"
+                  size={20}
+                  color={theme.colors.buttons}
+                  style={BudgetsStyles.icon}
+                />
+                <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
+                  {budget.endDate}
+                </Text>
+              </View>
+
+              <View style={BudgetsStyles.header}>
+                <TouchableOpacity
+                  style={BudgetsStyles.iconButton}
+                  onPress={() =>
+                    navigation.navigate('EditBudgetScreen', {budget})
+                  }>
+                  <Icon
+                    name="create-outline"
+                    size={24}
+                    color={theme.colors.buttons}
+                  />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={BudgetsStyles.iconButton}
+                  onPress={() =>
+                    navigation.navigate('AddTransactionScreen', {
+                      budgetId: budget.id,
+                      budgetName: budget.name,
+                    })
+                  }>
+                  <Icon name="cash" size={24} color={theme.colors.buttons} />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={BudgetsStyles.iconButton}
+                  onPress={() => handleDeleteBudget(budget.id)}>
+                  <Icon
+                    name="trash-outline"
+                    size={24}
+                    color={theme.colors.buttons}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
+        </>
       ) : (
         <Text style={{color: theme.colors.texts}}>
           No budgets found for this earning
