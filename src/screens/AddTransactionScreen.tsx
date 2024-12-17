@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   ScrollView,
   TextInput,
@@ -20,7 +20,8 @@ const AddTransactionScreen = () => {
     useRoute<RouteProp<RootStackParamList, 'AddTransactionScreen'>>();
   const {budgetId, budgetName} = route.params;
 
-  const {createTransaction, loading} = useTransactions();
+  const {createTransaction, loading, getTransactionsByBudgetId, transactions} =
+    useTransactions();
   const navigation = useNavigation();
 
   const [transactionData, setTransactionData] = useState({
@@ -29,6 +30,10 @@ const AddTransactionScreen = () => {
     date: '',
     category: '',
   });
+
+  useEffect(() => {
+    getTransactionsByBudgetId(budgetId);
+  }, [budgetId, getTransactionsByBudgetId]);
 
   const handleChange = (name: string, value: string) => {
     setTransactionData({
@@ -45,7 +50,7 @@ const AddTransactionScreen = () => {
 
     const transaction = {
       description: transactionData.description,
-      amount: Number(transactionData.amount),
+      amount: parseFloat(transactionData.amount),
       date: transactionData.date,
       budgetId: budgetId,
       categoryId: transactionData.category,
@@ -74,6 +79,7 @@ const AddTransactionScreen = () => {
       <Text style={[styles.headerText, {color: theme.colors.texts}]}>
         Add Transaction to {budgetName}
       </Text>
+
       <View style={styles.inputGroup}>
         <Text style={[styles.label, {color: theme.colors.texts}]}>Amount:</Text>
         <View style={styles.inputWithIcon}>
@@ -112,7 +118,7 @@ const AddTransactionScreen = () => {
       </View>
 
       <TouchableOpacity
-        style={[styles.saveButton, {backgroundColor: theme.colors.buttons}]}
+        style={[styles.saveButton, {backgroundColor: theme.colors.hovers}]}
         onPress={handleCreateTransaction}>
         {loading ? (
           <Loading />
@@ -120,6 +126,29 @@ const AddTransactionScreen = () => {
           <Text style={{color: theme.colors.texts}}>Save Transaction</Text>
         )}
       </TouchableOpacity>
+
+      <View style={styles.transactionsList}>
+        {transactions && transactions.length > 0 ? (
+          transactions.map(transaction => {
+            const amountString = transaction.amount.replace(/[^\d.-]/g, '');
+            const amount = parseFloat(amountString);
+
+            const amountColor = amount < 0 ? 'red' : 'green';
+
+            return (
+              <View key={transaction.id} style={styles.transactionItem}>
+                <Text style={{color: amountColor}}>
+                  {transaction.description}: {transaction.amount} COP
+                </Text>
+              </View>
+            );
+          })
+        ) : (
+          <Text style={{color: 'red'}}>
+            No transactions found for this budget.
+          </Text>
+        )}
+      </View>
     </ScrollView>
   );
 };
@@ -152,18 +181,18 @@ const styles = {
     padding: 10,
     fontSize: 16,
   },
-  dateButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  dateText: {
-    marginLeft: 10,
-    fontSize: 16,
-  },
   saveButton: {
+    display: 'flex',
     paddingVertical: 12,
     alignItems: 'center',
+    borderRadius: 5,
+  },
+  transactionsList: {
+    marginTop: 30,
+  },
+  transactionItem: {
+    marginBottom: 10,
+    padding: 10,
     borderRadius: 5,
   },
 };

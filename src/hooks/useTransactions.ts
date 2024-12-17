@@ -124,6 +124,43 @@ export const useTransactions = () => {
     [token],
   );
 
+  const getTransactionsByBudgetId = useCallback(
+    async (budgetId: string) => {
+      if (!token) {
+        setError('No token provided');
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await axios.get(`${Urls.BASE_URL}/transactions`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {budgetId},
+        });
+
+        if (response.status === 200) {
+          setTransactions(response.data);
+          console.log('Transactions fetched for budget:', response.data);
+        } else {
+          setError('Unexpected response status');
+        }
+      } catch (err: any) {
+        console.error(
+          'Error fetching transactions:',
+          err.response?.data || err.message,
+        );
+        setError(err.response?.data?.message || 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [token],
+  );
+
   return {
     loading,
     error,
@@ -132,5 +169,6 @@ export const useTransactions = () => {
     createTransaction,
     getTransactions,
     getTransactionById,
+    getTransactionsByBudgetId,
   };
 };
