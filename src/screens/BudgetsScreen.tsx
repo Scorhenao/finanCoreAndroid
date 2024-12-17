@@ -1,5 +1,12 @@
 import React, {useState, useCallback, useEffect, useMemo} from 'react';
-import {ScrollView, Text, View, TouchableOpacity, Alert} from 'react-native';
+import {
+  ScrollView,
+  Text,
+  View,
+  TouchableOpacity,
+  Alert,
+  Dimensions,
+} from 'react-native';
 import {
   useNavigation,
   useRoute,
@@ -14,8 +21,7 @@ import {notify} from '../components/NotificationManager';
 import Loading from '../components/loading';
 import {BudgetsStyles} from '../css/BudgetsStyles';
 import {useTransactions} from '../hooks/useTransactions';
-import {BarChart} from 'react-native-chart-kit';
-import {Dimensions} from 'react-native';
+import {PieChart} from 'react-native-svg-charts';
 
 type BudgetScreenRouteProp = RouteProp<RootStackParamList, 'BudgetsScreen'>;
 
@@ -33,12 +39,10 @@ const BudgetsScreen = () => {
   useFocusEffect(
     useCallback(() => {
       getBudgets();
+
       getTransactions();
     }, [getBudgets, getTransactions]),
   );
-
-  console.log('budgets', budgets);
-  console.log('transactions', transactions);
 
   const filteredBudgets = useMemo(
     () => budgets?.filter(budget => budget.earning.name === earningName) || [],
@@ -68,9 +72,6 @@ const BudgetsScreen = () => {
 
       setTotalIncome(income);
       setTotalExpenses(expenses);
-
-      console.log('Total Income:', income);
-      console.log('Total Expenses:', expenses);
     }
   }, [transactions, filteredBudgets]);
 
@@ -102,6 +103,8 @@ const BudgetsScreen = () => {
 
   const {width} = Dimensions.get('window');
 
+  console.log('the transactions are in the budgets screen', transactions);
+
   return (
     <ScrollView
       style={[
@@ -110,150 +113,152 @@ const BudgetsScreen = () => {
       ]}>
       {filteredBudgets.length > 0 ? (
         <>
-          <View style={{padding: 10, marginBottom: 20}}>
-            <Text style={[BudgetsStyles.title, {color: theme.colors.texts}]}>
-              Ingresos y Gastos
-            </Text>
-            <BarChart
-              data={{
-                labels: ['Ingresos', 'Gastos'],
-                datasets: [
-                  {
-                    data: [totalIncome, totalExpenses],
-                    colors: [() => 'green', () => 'red'],
-                  },
-                ],
-              }}
-              width={width - 40}
-              height={220}
-              chartConfig={{
-                backgroundColor: theme.colors.backgrounds,
-                backgroundGradientFrom: theme.colors.texts,
-                decimalPlaces: 2,
-                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                style: {
-                  borderRadius: 16,
-                },
-                propsForDots: {
-                  r: '6',
-                  strokeWidth: '2',
-                  stroke: 'green',
-                },
-                propsForLabels: {
-                  fontSize: 8,
-                },
-              }}
-              style={{
-                borderRadius: 16,
-              }}
-            />
-          </View>
+          {filteredBudgets.map(budget => {
+            let income = 0;
+            let expenses = 0;
 
-          {filteredBudgets.map(budget => (
-            <View key={budget.id} style={BudgetsStyles.detailsContainer}>
-              <Text style={[BudgetsStyles.title, {color: theme.colors.texts}]}>
-                Budget of {budget.name}
-              </Text>
-              <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
-                Description:
-              </Text>
-              <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
-                {budget.description}
-              </Text>
+            transactions.forEach(transaction => {
+              if (transaction.budget.id === budget.id) {
+                const amount = parseFloat(
+                  transaction.amount.replace(/[^\d.-]/g, ''),
+                );
+                if (amount > 0) {
+                  income += amount;
+                } else {
+                  expenses += amount;
+                }
+              }
+            });
 
-              <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
-                Budget Amount:
-              </Text>
-              <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
-                {budget.amount} COP
-              </Text>
+            const data = [
+              {key: 'Income', value: income, svg: {fill: 'green'}},
+              {key: 'Expenses', value: expenses, svg: {fill: 'red'}},
+            ];
 
-              <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
-                Category:
-              </Text>
-              <View
-                style={[
-                  BudgetsStyles.categoryContainer,
-                  {borderColor: theme.colors.texts},
-                ]}>
-                <Text style={[{color: theme.colors.texts}]}>
-                  {budget.category.name}
+            return (
+              <View key={budget.id} style={BudgetsStyles.detailsContainer}>
+                <Text
+                  style={[BudgetsStyles.title, {color: theme.colors.texts}]}>
+                  Budget of {budget.name}
                 </Text>
-              </View>
 
-              <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
-                Budget From:
-              </Text>
-              <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
-                {budget.earning.name}
-              </Text>
-              <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
-                Start Date:
-              </Text>
-              <View style={BudgetsStyles.dateContainer}>
-                <Icon
-                  name="calendar-outline"
-                  size={20}
-                  color={theme.colors.buttons}
-                  style={BudgetsStyles.icon}
+                {/* Pie Chart for each budget */}
+                <PieChart
+                  style={{height: 200, marginBottom: 20}}
+                  outerRadius={'90%'}
+                  innerRadius={'45%'}
+                  data={data}
                 />
-                <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
-                  {budget.startDate}
+
+                <Text
+                  style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
+                  Description:
                 </Text>
-              </View>
-
-              <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
-                End Date:
-              </Text>
-              <View style={BudgetsStyles.dateContainer}>
-                <Icon
-                  name="calendar-outline"
-                  size={20}
-                  color={theme.colors.buttons}
-                  style={BudgetsStyles.icon}
-                />
                 <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
-                  {budget.endDate}
+                  {budget.description}
                 </Text>
-              </View>
 
-              <View style={BudgetsStyles.header}>
-                <TouchableOpacity
-                  style={BudgetsStyles.iconButton}
-                  onPress={() =>
-                    navigation.navigate('EditBudgetScreen', {budget})
-                  }>
+                <Text
+                  style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
+                  Budget Amount:
+                </Text>
+                <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
+                  {budget.amount} COP
+                </Text>
+
+                <Text
+                  style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
+                  Category:
+                </Text>
+                <View
+                  style={[
+                    BudgetsStyles.categoryContainer,
+                    {borderColor: theme.colors.texts},
+                  ]}>
+                  <Text style={[{color: theme.colors.texts}]}>
+                    {budget.category.name}
+                  </Text>
+                </View>
+
+                <Text
+                  style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
+                  Budget From:
+                </Text>
+                <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
+                  {budget.earning.name}
+                </Text>
+
+                <Text
+                  style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
+                  Start Date:
+                </Text>
+                <View style={BudgetsStyles.dateContainer}>
                   <Icon
-                    name="create-outline"
-                    size={24}
+                    name="calendar-outline"
+                    size={20}
                     color={theme.colors.buttons}
+                    style={BudgetsStyles.icon}
                   />
-                </TouchableOpacity>
+                  <Text
+                    style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
+                    {budget.startDate}
+                  </Text>
+                </View>
 
-                <TouchableOpacity
-                  style={BudgetsStyles.iconButton}
-                  onPress={() =>
-                    navigation.navigate('AddTransactionScreen', {
-                      budgetId: budget.id,
-                      budgetName: budget.name,
-                    })
-                  }>
-                  <Icon name="cash" size={24} color={theme.colors.buttons} />
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={BudgetsStyles.iconButton}
-                  onPress={() => handleDeleteBudget(budget.id)}>
+                <Text
+                  style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
+                  End Date:
+                </Text>
+                <View style={BudgetsStyles.dateContainer}>
                   <Icon
-                    name="trash-outline"
-                    size={24}
+                    name="calendar-outline"
+                    size={20}
                     color={theme.colors.buttons}
+                    style={BudgetsStyles.icon}
                   />
-                </TouchableOpacity>
+                  <Text
+                    style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
+                    {budget.endDate}
+                  </Text>
+                </View>
+
+                <View style={BudgetsStyles.header}>
+                  <TouchableOpacity
+                    style={BudgetsStyles.iconButton}
+                    onPress={() =>
+                      navigation.navigate('EditBudgetScreen', {budget})
+                    }>
+                    <Icon
+                      name="create-outline"
+                      size={24}
+                      color={theme.colors.buttons}
+                    />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={BudgetsStyles.iconButton}
+                    onPress={() =>
+                      navigation.navigate('AddTransactionScreen', {
+                        budgetId: budget.id,
+                        budgetName: budget.name,
+                      })
+                    }>
+                    <Icon name="cash" size={24} color={theme.colors.buttons} />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={BudgetsStyles.iconButton}
+                    onPress={() => handleDeleteBudget(budget.id)}>
+                    <Icon
+                      name="trash-outline"
+                      size={24}
+                      color={theme.colors.buttons}
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          ))}
+            );
+          })}
         </>
       ) : (
         <Text style={{color: theme.colors.texts}}>

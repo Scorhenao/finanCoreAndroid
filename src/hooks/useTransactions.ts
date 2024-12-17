@@ -71,7 +71,6 @@ export const useTransactions = () => {
 
       if (response.status === 200) {
         setTransactions(response.data);
-        console.log('Transactions fetched:', response.data);
       } else {
         setError('Unexpected response status');
       }
