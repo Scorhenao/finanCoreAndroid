@@ -129,13 +129,12 @@ const AddTransactionScreen = () => {
       <View style={styles.transactionsList}>
         {transactions && transactions.length > 0 ? (
           transactions
-            .filter(transaction => transaction.budget.id === budgetId) // Filtra las transacciones por el presupuesto actual
+            .filter(transaction => transaction.budget.id === budgetId)
             .map(transaction => {
-              const amountString = transaction.amount.replace(/[^\d.-]/g, ''); // Limpia el monto
+              const amountString = transaction.amount.replace(/[^\d.-]/g, '');
               const amount = parseFloat(amountString);
 
-              // Determina el color dependiendo del signo del monto
-              const amountColor = amount < 0 ? 'red' : 'green'; // Rojo para negativos, verde para positivos
+              const amountColor = amount < 0 ? 'red' : 'green';
 
               return (
                 <View key={transaction.id} style={styles.transactionItem}>
@@ -190,12 +189,19 @@ const styles = {
     borderRadius: 5,
   },
   transactionsList: {
+    display: 'flex',
+    alignItems: 'center',
     marginTop: 30,
   },
   transactionItem: {
     marginBottom: 10,
     padding: 10,
     borderRadius: 5,
+    backgroundColor: '#fff',
+    borderColor: '#ddd',
+    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
   },
 };
 
