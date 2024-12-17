@@ -1,12 +1,5 @@
-import React, {useCallback} from 'react';
-import {
-  ScrollView,
-  Text,
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-} from 'react-native';
+import React, {useState, useCallback, useEffect, useMemo} from 'react';
+import {ScrollView, Text, View, TouchableOpacity, Alert} from 'react-native';
 import {
   useNavigation,
   useRoute,
@@ -19,6 +12,8 @@ import {RootStackParamList} from '../common/types/Navigation-types';
 import {useBudgets} from '../hooks/useBudgets';
 import {notify} from '../components/NotificationManager';
 import Loading from '../components/loading';
+import {BudgetsStyles} from '../css/BudgetsStyles';
+import {useTransactions} from '../hooks/useTransactions';
 
 type BudgetScreenRouteProp = RouteProp<RootStackParamList, 'BudgetsScreen'>;
 
@@ -28,15 +23,59 @@ const BudgetsScreen = () => {
   const navigation = useNavigation();
   const earningName = route.params.earningName;
   const {loading, error, budgets, getBudgets, deleteBudget} = useBudgets();
+  const {getTransactions, transactions} = useTransactions();
+
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [totalExpenses, setTotalExpenses] = useState(0);
 
   useFocusEffect(
     useCallback(() => {
       getBudgets();
-    }, [getBudgets]),
+      getTransactions();
+    }, [getBudgets, getTransactions]),
   );
 
-  const filteredBudgets =
-    budgets?.filter(budget => budget.earning.name === earningName) || [];
+  console.log('budgets', budgets);
+  console.log('transactions', transactions);
+
+  // Memoize filteredBudgets to prevent unnecessary recalculations
+  const filteredBudgets = useMemo(
+    () => budgets?.filter(budget => budget.earning.name === earningName) || [],
+    [budgets, earningName], // Only recompute when budgets or earningName change
+  );
+
+  useEffect(() => {
+    if (transactions && filteredBudgets.length > 0) {
+      let income = 0;
+      let expenses = 0;
+
+      transactions.forEach(transaction => {
+        filteredBudgets.forEach(budget => {
+          if (transaction.budget.id === budget.id) {
+            // Convierte las cantidades a números eliminando el símbolo de la moneda
+            const amount = parseFloat(
+              transaction.amount.replace(/[^\d.-]/g, ''),
+            );
+
+            // Si la transacción es positiva, es un ingreso
+            if (amount > 0) {
+              income += amount;
+            } else {
+              // Si la transacción es negativa, es un gasto
+              expenses += amount;
+            }
+          }
+        });
+      });
+
+      // Actualiza los totales solo después de realizar los cálculos
+      setTotalIncome(income);
+      setTotalExpenses(expenses);
+
+      console.log('Total Income:', income); // Muestra el total calculado
+      console.log('Total Expenses:', expenses); // Muestra el total calculado
+    }
+  }, [transactions, filteredBudgets]); // Solo dependemos de las transacciones y los presupuestos filtrados
 
   const handleDeleteBudget = (id: string) => {
     Alert.alert('Are you sure?', 'Do you really want to delete this budget?', [
@@ -64,42 +103,38 @@ const BudgetsScreen = () => {
     return <Text>{error}</Text>;
   }
 
-  let budgetsInfo = budgets
-    ?.filter(budget => budget.earning.name === earningName)
-    .map(budget => ({
-      budgetId: budget.id,
-      budgetName: budget.name,
-    }));
-
   return (
     <ScrollView
-      style={[styles.container, {backgroundColor: theme.colors.backgrounds}]}>
+      style={[
+        BudgetsStyles.container,
+        {backgroundColor: theme.colors.backgrounds},
+      ]}>
       {filteredBudgets.length > 0 ? (
         filteredBudgets.map(budget => (
-          <View key={budget.id} style={styles.detailsContainer}>
-            <Text style={[styles.title, {color: theme.colors.texts}]}>
+          <View key={budget.id} style={BudgetsStyles.detailsContainer}>
+            <Text style={[BudgetsStyles.title, {color: theme.colors.texts}]}>
               Budget of {budget.name}
             </Text>
-            <Text style={[styles.label, {color: theme.colors.texts}]}>
+            <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
               Description:
             </Text>
-            <Text style={[styles.text, {color: theme.colors.texts}]}>
+            <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
               {budget.description}
             </Text>
 
-            <Text style={[styles.label, {color: theme.colors.texts}]}>
+            <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
               Budget Amount:
             </Text>
-            <Text style={[styles.text, {color: theme.colors.texts}]}>
+            <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
               {budget.amount} COP
             </Text>
 
-            <Text style={[styles.label, {color: theme.colors.texts}]}>
+            <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
               Category:
             </Text>
             <View
               style={[
-                styles.categoryContainer,
+                BudgetsStyles.categoryContainer,
                 {borderColor: theme.colors.texts},
               ]}>
               <Text style={[{color: theme.colors.texts}]}>
@@ -107,45 +142,45 @@ const BudgetsScreen = () => {
               </Text>
             </View>
 
-            <Text style={[styles.label, {color: theme.colors.texts}]}>
+            <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
               Budget From:
             </Text>
-            <Text style={[styles.text, {color: theme.colors.texts}]}>
+            <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
               {budget.earning.name}
             </Text>
-            <Text style={[styles.label, {color: theme.colors.texts}]}>
+            <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
               Start Date:
             </Text>
-            <View style={styles.dateContainer}>
+            <View style={BudgetsStyles.dateContainer}>
               <Icon
                 name="calendar-outline"
                 size={20}
                 color={theme.colors.buttons}
-                style={styles.icon}
+                style={BudgetsStyles.icon}
               />
-              <Text style={[styles.text, {color: theme.colors.texts}]}>
+              <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
                 {budget.startDate}
               </Text>
             </View>
 
-            <Text style={[styles.label, {color: theme.colors.texts}]}>
+            <Text style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
               End Date:
             </Text>
-            <View style={styles.dateContainer}>
+            <View style={BudgetsStyles.dateContainer}>
               <Icon
                 name="calendar-outline"
                 size={20}
                 color={theme.colors.buttons}
-                style={styles.icon}
+                style={BudgetsStyles.icon}
               />
-              <Text style={[styles.text, {color: theme.colors.texts}]}>
+              <Text style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
                 {budget.endDate}
               </Text>
             </View>
 
-            <View style={styles.header}>
+            <View style={BudgetsStyles.header}>
               <TouchableOpacity
-                style={styles.iconButton}
+                style={BudgetsStyles.iconButton}
                 onPress={() =>
                   navigation.navigate('EditBudgetScreen', {budget})
                 }>
@@ -157,7 +192,7 @@ const BudgetsScreen = () => {
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.iconButton}
+                style={BudgetsStyles.iconButton}
                 onPress={() =>
                   navigation.navigate('AddTransactionScreen', {
                     budgetId: budget.id,
@@ -168,7 +203,7 @@ const BudgetsScreen = () => {
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.iconButton}
+                style={BudgetsStyles.iconButton}
                 onPress={() => handleDeleteBudget(budget.id)}>
                 <Icon
                   name="trash-outline"
@@ -187,81 +222,5 @@ const BudgetsScreen = () => {
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  iconButton: {
-    padding: 12,
-    borderRadius: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.05)',
-    elevation: 2,
-    marginHorizontal: 5,
-    transition: 'background-color 0.2s',
-  },
-  iconButtonPressed: {
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
-  },
-  detailsContainer: {
-    marginTop: 20,
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  dateContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 10,
-    borderColor: '#ddd',
-    backgroundColor: 'rgba(0, 0, 0, 0.02)',
-  },
-  icon: {
-    marginRight: 10,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 5,
-  },
-  text: {
-    fontSize: 16,
-    marginBottom: 15,
-  },
-  categoryContainer: {
-    borderWidth: 1,
-    fontSize: 16,
-    borderRadius: 8,
-    padding: 8,
-  },
-  transactionButtonContainer: {
-    marginTop: 20,
-    paddingHorizontal: 20,
-  },
-  transactionButton: {
-    backgroundColor: '#4CAF50',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  transactionButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
 
 export default BudgetsScreen;

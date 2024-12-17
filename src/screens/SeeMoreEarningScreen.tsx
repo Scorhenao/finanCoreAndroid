@@ -74,14 +74,6 @@ const SeeMoreEarningScreen = () => {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.iconButton}
-          onPress={() => {
-            navigation.navigate('EditEarningScreen', {earning});
-          }}>
-          <Icon name="create-outline" size={24} color={theme.colors.buttons} />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.iconButton}
           onPress={handleDeleteEarning}>
           <Icon name="trash-outline" size={24} color={theme.colors.buttons} />
         </TouchableOpacity>
