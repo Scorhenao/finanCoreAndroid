@@ -42,6 +42,7 @@ const HomeScreen = ({navigation}: any) => {
 
   const earningsData = Array.isArray(earnings) ? earnings : earnings?.data;
 
+  // Formatear los datos y calcular los totales
   const formattedData = Array.isArray(earningsData)
     ? earningsData.map(item => {
         const budgeted =
@@ -59,6 +60,26 @@ const HomeScreen = ({navigation}: any) => {
       })
     : [];
 
+  // Calcular los totales
+  const totalBudgeted = formattedData.reduce(
+    (acc, item) => acc + item.budgeted,
+    0,
+  );
+  const totalAvailable = formattedData.reduce(
+    (acc, item) => acc + item.available,
+    0,
+  );
+
+  // Crear los datos generales para la gráfica
+  const totalData = [
+    {
+      month: 'Total',
+      budgeted: totalBudgeted,
+      available: totalAvailable,
+      amountAvailable: totalAvailable - totalBudgeted,
+    },
+  ];
+
   const keys = ['budgeted', 'available'];
   const colors = [theme.colors.hovers, theme.colors.buttons];
 
@@ -71,7 +92,8 @@ const HomeScreen = ({navigation}: any) => {
       {Array.isArray(earningsData) && earningsData.length > 0 ? (
         <>
           <Wallet data={formattedData} />
-          <BarChartComponent data={formattedData} keys={keys} colors={colors} />
+          {/* Mostrar la gráfica general con los totales */}
+          <BarChartComponent data={totalData} keys={keys} colors={colors} />
         </>
       ) : (
         <Text>No earnings available</Text>
