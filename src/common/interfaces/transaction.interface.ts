@@ -2,5 +2,7 @@ export interface Transaction {
   id: string;
   amount: number;
   description: string;
-  budgetId: string;
+  budget: {
+    id: string;
+  };
 }

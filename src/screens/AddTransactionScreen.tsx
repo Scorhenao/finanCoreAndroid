@@ -129,13 +129,12 @@ const AddTransactionScreen = () => {
       <View style={styles.transactionsList}>
         {transactions && transactions.length > 0 ? (
           transactions
-            .filter(transaction => transaction.budget.id === budgetId)
+            .filter(
+              transaction =>
+                transaction?.budget && transaction.budget.id === budgetId,
+            )
             .map(transaction => {
-              const amountString = transaction.amount.replace(/[^\d.-]/g, '');
-              const amount = parseFloat(amountString);
-
-              const amountColor = amount < 0 ? 'red' : 'green';
-
+              const amountColor = transaction.amount < 0 ? 'red' : 'green';
               return (
                 <View key={transaction.id} style={styles.transactionItem}>
                   <Text style={{color: amountColor}}>
