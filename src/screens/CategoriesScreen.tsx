@@ -38,16 +38,15 @@ const CategoriesScreen = () => {
 
     try {
       await createCategory(categoryName);
-
       setCategoryName('');
       notify('success', 'Category Created', '');
       fetchCategories();
-
       navigation.goBack();
     } catch (err: any) {
       notify('danger', 'Error Creating Category', err.message);
     }
   };
+
   useFocusEffect(
     React.useCallback(() => {
       fetchCategories();
@@ -93,9 +92,9 @@ const CategoriesScreen = () => {
 
           {loading && <Loading />}
 
-          {error && <Text style={{color: theme.colors.danger}}>{error}</Text>}
+          {error && <Text style={{color: 'red'}}>{error}</Text>}
           {successMessage && (
-            <Text style={{color: theme.colors.success}}>{successMessage}</Text>
+            <Text style={{color: theme.colors.hovers}}>{successMessage}</Text>
           )}
 
           <View style={styles.categoryList}>

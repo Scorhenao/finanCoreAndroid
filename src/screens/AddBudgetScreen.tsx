@@ -10,7 +10,7 @@ import {useTheme} from '../context/ThemeContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useFocusEffect, useNavigation, useRoute} from '@react-navigation/native';
 import {useBudgets} from '../hooks/useBudgets';
 import Loading from '../components/loading';
 import {AddBudgetstyles} from '../css/AddBudgetStyles';
@@ -43,9 +43,11 @@ const AddBudgetScreen = () => {
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
-  useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchCategories();
+    }, [fetchCategories]),
+  );
 
   useEffect(() => {
     if (categoriesResponse?.data) {
