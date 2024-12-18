@@ -17,13 +17,20 @@ import Loading from '../components/loading';
 import {useImagePicker} from '../hooks/useImagePicker';
 import {ProfileStyles} from '../css/ProfileStyles';
 import {useNavigation} from '@react-navigation/native';
+import {RootStackParamList} from '../common/types/Navigation-types';
+import {NativeStackNavigationProp} from 'react-native-screens/lib/typescript/native-stack/types';
+
+type ProfileScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'ProfileScreen'
+>;
 
 const ProfileScreen = ({route}: any) => {
   const {theme} = useTheme();
   const {token} = useAuth();
   const {user: hookUser, loading, error, getUserById, updateUser} = useUser();
   const {imageUri, handleImageSelect, handleTakePhoto} = useImagePicker();
-  const navigation = useNavigation();
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
   const {user, setUser} = route?.params;
 
   const [newName, setNewName] = useState(user?.name || '');
@@ -75,7 +82,7 @@ const ProfileScreen = ({route}: any) => {
       );
       notify('success', 'User updated successfully');
       setUser({...user, name: newName, email: newEmail, phone: newPhone});
-      navigation.goBack();
+      navigation.replace('HomeScreen');
     } catch (err) {
       console.error('Error updating user:', err);
     }

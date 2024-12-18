@@ -22,5 +22,8 @@ export type RootStackParamList = {
   BudgetsScreen: {earningId: String; earningName: String};
   EditBudgetScreen: {budget: BudgetResponse};
   AddTransactionScreen: {budgetId: string; budgetName: string};
-  ProfileScreen: {user: User};
+  ProfileScreen: {
+    user: User;
+    setUser: React.Dispatch<React.SetStateAction<User>>;
+  };
 };
