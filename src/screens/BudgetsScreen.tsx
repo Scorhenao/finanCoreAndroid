@@ -104,13 +104,139 @@ const BudgetsScreen = () => {
           {filteredBudgets.map(budget => {
             let income = 0;
             let expenses = 0;
-            if (transactions == null) {
+
+            // Si no hay transacciones, no calculamos los ingresos y gastos, pero mostramos el presupuesto
+            if (!transactions || transactions.length === 0) {
               return (
-                <View key={budget.id}>
-                  <Text>No transactions found</Text>
+                <View key={budget.id} style={BudgetsStyles.detailsContainer}>
+                  <Text
+                    style={[BudgetsStyles.title, {color: theme.colors.texts}]}>
+                    Budget of {budget.name}
+                  </Text>
+
+                  {/* Mostrar mensaje que no hay transacciones */}
+                  <Text>No transactions found for this budget</Text>
+
+                  {/* Detalles del presupuesto */}
+                  <Text
+                    style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
+                    Description:
+                  </Text>
+                  <Text
+                    style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
+                    {budget.description}
+                  </Text>
+
+                  <Text
+                    style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
+                    Budget Amount:
+                  </Text>
+                  <Text
+                    style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
+                    {budget.amount} COP
+                  </Text>
+
+                  <Text
+                    style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
+                    Category:
+                  </Text>
+                  <View
+                    style={[
+                      BudgetsStyles.categoryContainer,
+                      {borderColor: theme.colors.texts},
+                    ]}>
+                    <Text style={[{color: theme.colors.texts}]}>
+                      {budget.category.name}
+                    </Text>
+                  </View>
+
+                  <Text
+                    style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
+                    Budget From:
+                  </Text>
+                  <Text
+                    style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
+                    {budget.earning.name}
+                  </Text>
+
+                  <Text
+                    style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
+                    Start Date:
+                  </Text>
+                  <View style={BudgetsStyles.dateContainer}>
+                    <Icon
+                      name="calendar-outline"
+                      size={20}
+                      color={theme.colors.buttons}
+                      style={BudgetsStyles.icon}
+                    />
+                    <Text
+                      style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
+                      {budget.startDate}
+                    </Text>
+                  </View>
+
+                  <Text
+                    style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
+                    End Date:
+                  </Text>
+                  <View style={BudgetsStyles.dateContainer}>
+                    <Icon
+                      name="calendar-outline"
+                      size={20}
+                      color={theme.colors.buttons}
+                      style={BudgetsStyles.icon}
+                    />
+                    <Text
+                      style={[BudgetsStyles.text, {color: theme.colors.texts}]}>
+                      {budget.endDate}
+                    </Text>
+                  </View>
+
+                  {/* Botones */}
+                  <View style={BudgetsStyles.header}>
+                    <TouchableOpacity
+                      style={BudgetsStyles.iconButton}
+                      onPress={() =>
+                        navigation.navigate('EditBudgetScreen', {budget})
+                      }>
+                      <Icon
+                        name="create-outline"
+                        size={24}
+                        color={theme.colors.buttons}
+                      />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={BudgetsStyles.iconButton}
+                      onPress={() =>
+                        navigation.navigate('AddTransactionScreen', {
+                          budgetId: budget.id,
+                          budgetName: budget.name,
+                        })
+                      }>
+                      <Icon
+                        name="cash"
+                        size={24}
+                        color={theme.colors.buttons}
+                      />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={BudgetsStyles.iconButton}
+                      onPress={() => handleDeleteBudget(budget.id)}>
+                      <Icon
+                        name="trash-outline"
+                        size={24}
+                        color={theme.colors.buttons}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               );
             }
+
+            // Si hay transacciones, calcular ingresos y gastos
             transactions.forEach(transaction => {
               if (transaction.budget.id === budget.id) {
                 const amount = parseFloat(
@@ -142,7 +268,7 @@ const BudgetsScreen = () => {
                   Budget of {budget.name}
                 </Text>
 
-                {/* Pie Chart for each budget */}
+                {/* Mostrar gráfica de presupuesto solo si hay transacciones */}
                 <PieChart
                   style={{height: 200, marginBottom: 20}}
                   outerRadius={'90%'}
@@ -150,7 +276,7 @@ const BudgetsScreen = () => {
                   data={data}
                 />
 
-                {/* Show percentages under the chart */}
+                {/* Mostrar porcentajes debajo de la gráfica */}
                 <View
                   style={{
                     flexDirection: 'row',
@@ -167,6 +293,7 @@ const BudgetsScreen = () => {
                   </Text>
                 </View>
 
+                {/* Detalles del presupuesto */}
                 <Text
                   style={[BudgetsStyles.label, {color: theme.colors.texts}]}>
                   Description:
@@ -239,6 +366,7 @@ const BudgetsScreen = () => {
                   </Text>
                 </View>
 
+                {/* Botones */}
                 <View style={BudgetsStyles.header}>
                   <TouchableOpacity
                     style={BudgetsStyles.iconButton}
