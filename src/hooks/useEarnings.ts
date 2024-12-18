@@ -28,7 +28,6 @@ export const useEarnings = () => {
         },
       });
 
-      console.log('Earnings response:', response.data);
       if (response.status === 200) {
         setEarnings(response.data);
       } else {

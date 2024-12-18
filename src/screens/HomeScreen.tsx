@@ -1,10 +1,11 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ScrollView,
   StyleSheet,
   View,
   TouchableOpacity,
   Text,
+  Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import EarningsDropdown from '../components/EarningsDropdown';
@@ -13,22 +14,54 @@ import Wallet from '../components/Wallet';
 import Loading from '../components/loading';
 import {useEarnings} from '../hooks/useEarnings';
 import BarChartComponent from '../components/BarChartComponent';
+import {useUser} from '../hooks/useUser';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {decryptToken} from '../common/utils/tokenUtils';
 
 const HomeScreen = ({navigation}: any) => {
   const {theme} = useTheme();
   const {earnings, fetchEarnings, loading, error} = useEarnings();
+  const {user, getUserById, loading: userLoading, error: userError} = useUser();
+  const [userImage, setUserImage] = useState<string | null>(null);
+  const getUserIdFromToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem('accessToken');
+      if (token && token !== null) {
+        const decoded = decryptToken(token);
+        const userId = decoded?.userId;
+
+        if (userId) {
+          getUserById(userId);
+        } else {
+          console.error('User ID not found in token');
+        }
+      } else {
+        console.error('Token is invalid or not found');
+      }
+    } catch (err: any) {
+      console.error('Error getting user ID from token:', err.message);
+    }
+  };
 
   useEffect(() => {
     fetchEarnings();
+    setUserImage(null);
+    getUserIdFromToken();
   }, [fetchEarnings]);
 
   useEffect(() => {
-    if (error) {
-      console.error(error);
+    if (user) {
+      setUserImage(user?.profilePicture || null);
     }
-  }, [error]);
+  }, [user]);
 
-  if (loading) {
+  useEffect(() => {
+    if (userError) {
+      console.error(userError);
+    }
+  }, [userError]);
+
+  if (loading || userLoading) {
     return <Loading />;
   }
 
@@ -40,9 +73,16 @@ const HomeScreen = ({navigation}: any) => {
     );
   }
 
+  if (userError) {
+    return (
+      <View style={[{backgroundColor: theme.colors.backgrounds}]}>
+        <Text>Error fetching user data: {userError}</Text>
+      </View>
+    );
+  }
+
   const earningsData = Array.isArray(earnings) ? earnings : earnings?.data;
 
-  // Formatear los datos y calcular los totales
   const formattedData = Array.isArray(earningsData)
     ? earningsData.map(item => {
         const budgeted =
@@ -60,7 +100,6 @@ const HomeScreen = ({navigation}: any) => {
       })
     : [];
 
-  // Calcular los totales
   const totalBudgeted = formattedData.reduce(
     (acc, item) => acc + item.budgeted,
     0,
@@ -70,7 +109,6 @@ const HomeScreen = ({navigation}: any) => {
     0,
   );
 
-  // Crear los datos generales para la gráfica
   const totalData = [
     {
       month: 'Total',
@@ -89,10 +127,24 @@ const HomeScreen = ({navigation}: any) => {
         styles.scrollContainer,
         {backgroundColor: theme.colors.backgrounds},
       ]}>
+      <View style={styles.profileContainer}>
+        {userImage ? (
+          <Image
+            source={{uri: userImage}}
+            style={[styles.profileImage, {borderColor: theme.colors.texts}]}
+          />
+        ) : (
+          <Icon
+            name="person-circle-outline"
+            size={150}
+            color={theme.colors.texts}
+          />
+        )}
+      </View>
+
       {Array.isArray(earningsData) && earningsData.length > 0 ? (
         <>
           <Wallet data={formattedData} />
-          {/* Mostrar la gráfica general con los totales */}
           <BarChartComponent data={totalData} keys={keys} colors={colors} />
         </>
       ) : (
@@ -131,6 +183,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  profileContainer: {
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 2,
   },
 });
 

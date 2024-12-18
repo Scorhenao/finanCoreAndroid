@@ -91,7 +91,6 @@ const CategoriesScreen = () => {
             <Text style={{color: theme.colors.texts}}>Add Category</Text>
           </TouchableOpacity>
 
-          {/* Mostrar el componente Loading si está cargando */}
           {loading && <Loading />}
 
           {error && <Text style={{color: theme.colors.danger}}>{error}</Text>}
