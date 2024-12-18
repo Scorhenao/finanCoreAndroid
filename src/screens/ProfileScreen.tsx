@@ -1,28 +1,40 @@
 import React, {useState, useEffect} from 'react';
-import {ScrollView, View, Text, TextInput, Button} from 'react-native';
+import {
+  ScrollView,
+  View,
+  Text,
+  TextInput,
+  Button,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useTheme} from '../context/ThemeContext';
-import {CircleImage} from '../components/CircleImage';
-import {AuthStyles} from '../css/AuthStyles';
 import {useAuth} from '../hooks/useAuth';
-import {useUser} from '../hooks/useUser'; // Importa el hook useUser
+import {useUser} from '../hooks/useUser';
 import {notify} from '../components/NotificationManager';
 import Loading from '../components/loading';
-import {FileType} from '../common/types/FileTypes';
+import {useImagePicker} from '../hooks/useImagePicker';
+import {ProfileStyles} from '../css/ProfileStyles';
+import {useNavigation} from '@react-navigation/native';
 
-const ProfileScreen = () => {
+const ProfileScreen = ({route}: any) => {
   const {theme} = useTheme();
   const {token} = useAuth();
-  const {user, loading, error, getUserById, updateUser} = useUser();
+  const {user: hookUser, loading, error, getUserById, updateUser} = useUser();
+  const {imageUri, handleImageSelect, handleTakePhoto} = useImagePicker();
+  const navigation = useNavigation();
+  const {user, setUser} = route?.params;
+
   const [newName, setNewName] = useState(user?.name || '');
+  const [newEmail, setNewEmail] = useState(user?.email || '');
   const [newPhone, setNewPhone] = useState(user?.phone || '');
-  const [selectedFile, setSelectedFile] = useState<FileType | null>(null);
 
   useEffect(() => {
-    if (token) {
-      getUserById('user-id');
+    if (!user && token) {
+      getUserById(user.id);
     }
-  }, [token, getUserById]);
+  }, [token, getUserById, user.id, user]);
 
   useEffect(() => {
     if (error) {
@@ -30,38 +42,84 @@ const ProfileScreen = () => {
     }
   }, [error]);
 
-  const handleFileSelection = (file: FileType | null) => {
-    setSelectedFile(file);
-  };
-
   const handleSave = async () => {
-    if (!user) return;
+    if (!user) {
+      return;
+    }
 
-    const updatedUser = {
-      name: newName,
-      phone: newPhone,
-    };
+    const formData = new FormData();
 
-    await updateUser(
-      user.id,
-      updatedUser,
-      selectedFile ? new FormData().append('file', selectedFile) : undefined,
-    );
+    if (newName) {
+      formData.append('name', newName);
+    }
+    if (newEmail) {
+      formData.append('email', newEmail);
+    }
+    if (newPhone) {
+      formData.append('phone', newPhone);
+    }
+
+    if (imageUri) {
+      formData.append('file', {
+        uri: imageUri,
+        type: 'image/jpeg',
+        name: 'profile.jpg',
+      });
+    }
+
+    try {
+      await updateUser(
+        user.id,
+        {name: newName, email: newEmail, phone: newPhone},
+        formData,
+      );
+      notify('success', 'User updated successfully');
+      setUser({...user, name: newName, email: newEmail, phone: newPhone});
+      navigation.goBack();
+    } catch (err) {
+      console.error('Error updating user:', err);
+    }
   };
 
   return (
     <ScrollView
       style={[
-        AuthStyles.container,
+        ProfileStyles.container,
         {backgroundColor: theme.colors.backgrounds},
       ]}>
-      <View style={AuthStyles.titleContainer}>
-        <CircleImage
-          onFileSelected={handleFileSelection}
-          imageUri={user?.profileImage}
-        />
-        <View style={AuthStyles.formUpContainer}>
-          <Text style={[AuthStyles.title, {color: theme.colors.texts}]}>
+      <View style={ProfileStyles.titleContainer}>
+        <TouchableOpacity
+          style={ProfileStyles.profileContainer}
+          onPress={async () => {
+            const file = await handleImageSelect();
+            console.log('Selected file:', file);
+          }}>
+          {imageUri ? (
+            <Image
+              source={{uri: imageUri}}
+              style={[
+                ProfileStyles.profileImage,
+                {borderColor: theme.colors.texts},
+              ]}
+            />
+          ) : user?.profilePicture ? (
+            <Image
+              source={{uri: user.profilePicture}}
+              style={[
+                ProfileStyles.profileImage,
+                {borderColor: theme.colors.texts},
+              ]}
+            />
+          ) : (
+            <Icon
+              name="person-circle-outline"
+              size={150}
+              color={theme.colors.texts}
+            />
+          )}
+        </TouchableOpacity>
+        <View style={ProfileStyles.formUpContainer}>
+          <Text style={[ProfileStyles.title, {color: theme.colors.texts}]}>
             Profile
           </Text>
         </View>
@@ -71,12 +129,18 @@ const ProfileScreen = () => {
         <Loading />
       ) : (
         <>
-          <View style={AuthStyles.nameNumberContainer}>
+          <View style={ProfileStyles.formContainer}>
             <InputField
               label="Name"
               value={newName}
               onChange={setNewName}
               icon="person-outline"
+            />
+            <InputField
+              label="Email"
+              value={newEmail}
+              onChange={setNewEmail}
+              icon="mail-outline"
             />
             <InputField
               label="Phone"
@@ -102,29 +166,32 @@ const InputField = ({
   value,
   onChange,
   icon,
+  secureTextEntry = false,
 }: {
   label: string;
   value: string;
   onChange: (text: string) => void;
   icon: string;
+  secureTextEntry?: boolean;
 }) => {
   const {theme} = useTheme();
   return (
-    <View style={AuthStyles.inputGroup}>
-      <Text style={[AuthStyles.label, {color: theme.colors.texts}]}>
+    <View style={ProfileStyles.inputGroup}>
+      <Text style={[ProfileStyles.label, {color: theme.colors.texts}]}>
         {label}:
       </Text>
-      <View style={AuthStyles.inputWithIcon}>
+      <View style={ProfileStyles.inputWithIcon}>
         <Icon name={icon} size={20} color={theme.colors.texts} />
         <TextInput
           style={[
-            AuthStyles.input,
+            ProfileStyles.input,
             {borderColor: theme.colors.inputs, color: theme.colors.texts},
           ]}
           value={value}
           onChangeText={onChange}
           placeholder={`Your ${label.toLowerCase()}`}
           placeholderTextColor={theme.colors.texts}
+          secureTextEntry={secureTextEntry}
         />
       </View>
     </View>

@@ -23,6 +23,8 @@ const HomeScreen = ({navigation}: any) => {
   const {earnings, fetchEarnings, loading, error} = useEarnings();
   const {user, getUserById, loading: userLoading, error: userError} = useUser();
   const [userImage, setUserImage] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState(user);
+
   const getUserIdFromToken = async () => {
     try {
       const token = await AsyncStorage.getItem('accessToken');
@@ -51,15 +53,10 @@ const HomeScreen = ({navigation}: any) => {
 
   useEffect(() => {
     if (user) {
+      setCurrentUser(user);
       setUserImage(user?.profilePicture || null);
     }
   }, [user]);
-
-  useEffect(() => {
-    if (userError) {
-      console.error(userError);
-    }
-  }, [userError]);
 
   if (loading || userLoading) {
     return <Loading />;
@@ -127,7 +124,14 @@ const HomeScreen = ({navigation}: any) => {
         styles.scrollContainer,
         {backgroundColor: theme.colors.backgrounds},
       ]}>
-      <View style={styles.profileContainer}>
+      <TouchableOpacity
+        style={styles.profileContainer}
+        onPress={() =>
+          navigation.navigate('ProfileScreen', {
+            user: currentUser,
+            setUser: setCurrentUser,
+          })
+        }>
         {userImage ? (
           <Image
             source={{uri: userImage}}
@@ -140,7 +144,7 @@ const HomeScreen = ({navigation}: any) => {
             color={theme.colors.texts}
           />
         )}
-      </View>
+      </TouchableOpacity>
 
       {Array.isArray(earningsData) && earningsData.length > 0 ? (
         <>

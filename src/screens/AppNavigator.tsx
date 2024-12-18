@@ -24,6 +24,7 @@ import BudgetsScreen from './BudgetsScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EditBudgetScreen from './EditBudgetScreen';
 import AddTransactionScreen from './AddTransactionScreen';
+import ProfileScreen from './ProfileScreen';
 
 const Stack = createStackNavigator();
 
@@ -435,6 +436,32 @@ export default function AppNavigator() {
         component={AddTransactionScreen}
         options={{
           headerTitle: 'Add Transaction',
+          headerStyle: AppNavigatorStyles.headerStyle,
+          headerBackground: () => (
+            <LinearGradient
+              colors={[theme.colors.texts, theme.colors.backgrounds]}
+              style={AppNavigatorStyles.gradientStyle}
+            />
+          ),
+          headerTintColor: theme.colors.texts,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{marginLeft: 16}}>
+              <Ionicons
+                name="return-down-back"
+                size={28}
+                color={theme.colors.texts}
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="ProfileScreen"
+        component={ProfileScreen}
+        options={{
+          headerTitle: 'Profile',
           headerStyle: AppNavigatorStyles.headerStyle,
           headerBackground: () => (
             <LinearGradient

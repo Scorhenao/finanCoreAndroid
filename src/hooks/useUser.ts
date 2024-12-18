@@ -29,7 +29,7 @@ export const useUser = () => {
         });
 
         if (response.status === 200) {
-          setUser(response.data);
+          setUser(response.data); // Set user data
         } else {
           setError('Unexpected response status');
         }
@@ -57,16 +57,20 @@ export const useUser = () => {
       setError(null);
       setSuccessMessage(null);
 
-      const formData = new FormData();
-      formData.append('name', updatedUser.name || '');
-      formData.append('email', updatedUser.email || '');
-      formData.append('phone', updatedUser.phone || '');
-      if (file) formData.append('file', file);
-
       try {
+        console.log('Request URL:', `${Urls.BASE_URL}/users/${id}`);
+        console.log('Request Headers:', {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        });
+        console.log('FormData contents:');
+        for (let [key, value] of file._parts) {
+          console.log(`${key}:`, value);
+        }
+
         const response = await axios.patch(
           `${Urls.BASE_URL}/users/${id}`,
-          formData,
+          file,
           {
             headers: {
               'Content-Type': 'multipart/form-data',
@@ -76,16 +80,15 @@ export const useUser = () => {
         );
 
         if (response.status === 200) {
+          setUser(prevUser => ({
+            ...prevUser,
+            ...updatedUser,
+          }));
           setSuccessMessage('User updated successfully');
-          setUser(prevUser => ({...prevUser, ...updatedUser} as User));
-        } else {
-          setError('Unexpected response status');
         }
       } catch (err: any) {
-        console.error(
-          'Error updating user:',
-          err.response?.data || err.message,
-        );
+        console.error('Full error object:', err);
+        console.error('Error response:', err.response);
         setError(err.response?.data?.message || 'An error occurred');
       } finally {
         setLoading(false);

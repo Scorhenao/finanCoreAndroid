@@ -1,5 +1,6 @@
 import {BudgetResponse} from '../interfaces/budgetResponse.interface';
 import {Earning} from '../interfaces/earning.interface';
+import {User} from '../interfaces/user.interface';
 
 export type RootStackParamList = {
   RegisterScreen: undefined;
@@ -21,5 +22,5 @@ export type RootStackParamList = {
   BudgetsScreen: {earningId: String; earningName: String};
   EditBudgetScreen: {budget: BudgetResponse};
   AddTransactionScreen: {budgetId: string; budgetName: string};
-  ProfileScreen: undefined;
+  ProfileScreen: {user: User};
 };
