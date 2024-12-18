@@ -189,9 +189,9 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
     borderWidth: 2,
   },
 });
