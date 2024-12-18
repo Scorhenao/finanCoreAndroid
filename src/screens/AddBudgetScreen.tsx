@@ -10,7 +10,11 @@ import {useTheme} from '../context/ThemeContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {useFocusEffect, useNavigation, useRoute} from '@react-navigation/native';
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {useBudgets} from '../hooks/useBudgets';
 import Loading from '../components/loading';
 import {AddBudgetstyles} from '../css/AddBudgetStyles';
@@ -93,6 +97,7 @@ const AddBudgetScreen = () => {
       notify('danger', 'Validation Error', 'Amount must be greater than zero.');
       return;
     }
+
     const budget = {
       name: budgetData.name,
       description: budgetData.description,
@@ -113,28 +118,46 @@ const AddBudgetScreen = () => {
           `Budget "${budgetData.name}" was successfully created.`,
         );
         navigation.goBack();
+      } else {
+        notify('danger', 'Error', 'Budget creation failed, try again.');
       }
     } catch (err: any) {
-      notify('danger', 'Error', 'Failed to create budget. Please try again.');
+      console.log('Error:', err); // Log the entire error object to inspect it
+
+      let errorMessage = 'Failed to create budget. Please try again.';
+
+      // Check if the error has the specific "duplicate key" message
       if (err && err.message) {
         if (
+          err.message.includes('duplicate key value violates unique constraint')
+        ) {
+          errorMessage =
+            'A budget with this name already exists. Please choose a different name.';
+        } else if (
           err.message.includes('The date range must be at least one month.')
         ) {
-          notify(
-            'danger',
-            'Error',
-            'The date range must be at least one month. Please adjust the start and end dates.',
-          );
+          errorMessage =
+            'The date range must be at least one month. Please adjust the start and end dates.';
         } else {
-          notify(
-            'danger',
-            'Error',
-            'Failed to create budget. Please try again.',
-          );
+          errorMessage = err.message;
         }
-      } else {
-        notify('danger', 'Error', 'An unexpected error occurred.');
+      } else if (err?.response?.data?.message) {
+        // In case the error is nested deeper (e.g., within response.data)
+        const responseErrorMessage = err.response.data.message;
+        if (
+          responseErrorMessage.includes(
+            'duplicate key value violates unique constraint',
+          )
+        ) {
+          errorMessage =
+            'A budget with this name already exists. Please choose a different name.';
+        } else {
+          errorMessage = responseErrorMessage;
+        }
       }
+
+      // Notify the user with the correct error message
+      notify('danger', 'Error', errorMessage);
     }
   };
 
@@ -202,7 +225,6 @@ const AddBudgetScreen = () => {
         </View>
       </View>
 
-      {/* Start Date Picker */}
       <View style={AddBudgetstyles.inputGroupDates}>
         <View style={AddBudgetstyles.inputGroup}>
           <Text style={[AddBudgetstyles.label, {color: theme.colors.texts}]}>
@@ -233,7 +255,6 @@ const AddBudgetScreen = () => {
           )}
         </View>
 
-        {/* End Date Picker */}
         <View style={AddBudgetstyles.inputGroup}>
           <Text style={[AddBudgetstyles.label, {color: theme.colors.texts}]}>
             End Date:
@@ -264,7 +285,6 @@ const AddBudgetScreen = () => {
         </View>
       </View>
 
-      {/* Modify Category and Icon */}
       <TouchableOpacity
         onPress={() =>
           navigation.navigate('CategoriesScreen', {
@@ -284,7 +304,6 @@ const AddBudgetScreen = () => {
         </View>
       </TouchableOpacity>
 
-      {/* Category Select */}
       <View style={AddBudgetstyles.inputGroup}>
         <Text style={[AddBudgetstyles.label, {color: theme.colors.texts}]}>
           Category:
@@ -312,7 +331,6 @@ const AddBudgetScreen = () => {
         )}
       </View>
 
-      {/* Budget Text */}
       <View style={AddBudgetstyles.budgetText}>
         <Text style={[AddBudgetstyles.modifyText, {color: theme.colors.texts}]}>
           Budget from {earningName}

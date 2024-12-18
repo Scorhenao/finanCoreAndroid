@@ -80,10 +80,7 @@ const EarningsDropdown = () => {
               <View style={styles.menu}>
                 <View style={styles.menuItem}>
                   <Text
-                    style={[
-                      styles.menuText,
-                      freeSalary < 0 && styles.debtText,
-                    ]}>
+                    style={[styles.menuText, freeSalary < 0 && styles.debtText]}>
                     Free Salary:{' '}
                     {freeSalary.toLocaleString('en-US', {
                       style: 'currency',
@@ -98,6 +95,7 @@ const EarningsDropdown = () => {
                   <Text style={styles.menuText}>See More</Text>
                   <Icon name="ellipsis-horizontal" size={20} color="#000" />
                 </TouchableOpacity>
+
                 <TouchableOpacity
                   style={styles.menuItemAddBudget}
                   onPress={() =>
